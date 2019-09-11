@@ -13,3 +13,17 @@ services:
       - FLASK_APP=api/__init__.py
       - FLASK_ENV=development
       - APP_SETTINGS=api.config.DevelopmentConfig
+      - DATABASE_URL=postgres://postgres:postgres@server-db:5432/capital_call_dev
+      - DATABASE_TEST_URL=postgres://postgres:postgres@server-db:5432/capital_call_test
+    depends_on:
+      - server-db
+
+  server-db:
+    build:
+      context: ./services/server/api/db
+      dockerfile: Dockerfile
+    ports:
+      - 5435:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
