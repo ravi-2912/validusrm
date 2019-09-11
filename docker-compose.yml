@@ -10,7 +10,6 @@ services:
     ports:
       - 5001:5000
     environment:
-      - FLASK_APP=api/__init__.py
       - FLASK_ENV=development
       - APP_SETTINGS=api.config.DevelopmentConfig
       - DATABASE_URL=postgres://postgres:postgres@server-db:5432/capital_call_dev
