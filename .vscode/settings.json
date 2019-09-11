@@ -9,6 +9,7 @@
         "**/node_modules": true,
         "**/env": true,
         "**/__pycache__": true,
-        "**/.gitkeep": true
+        "**/.gitkeep": true,
+        "**/htmlcov": true
     }
 }
