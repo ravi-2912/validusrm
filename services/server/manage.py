@@ -1,7 +1,8 @@
-import os, sys, unittest, coverage
+import sys
+import unittest
+import coverage
 from flask.cli import FlaskGroup
 from api import create_app, db
-from api.auth.models import User
 
 app = create_app()
 cli = FlaskGroup(create_app=create_app)

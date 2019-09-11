@@ -9,9 +9,9 @@ api = Api(auth_blueprint)
 class UsersPing(Resource):
     def get(self):
         return {
-        'status': 'success',
-        'message': 'pong!'
-    }
+            'status': 'success',
+            'message': 'pong!'
+        }
 
 
 api.add_resource(UsersPing, '/users/ping')
