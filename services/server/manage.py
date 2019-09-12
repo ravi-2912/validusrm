@@ -26,10 +26,11 @@ def cov():
     if result.wasSuccessful():
         COV.stop()
         COV.save()
-        print('Coverage Summary:')
+        print('\n\nCoverage Summary:')
         COV.report()
         COV.html_report()
         COV.erase()
+        print('\n\n')
         return 0
     sys.exit(result)
 
