@@ -1,23 +1,14 @@
 import sys
 import unittest
-import coverage
 from flask.cli import FlaskGroup
 
+from testcoverage import COV
 from api import create_app, db
 from api.auth.users import User
 
+
 app = create_app()
 cli = FlaskGroup(create_app=create_app)
-
-COV = coverage.coverage(
-    branch=True,
-    include='api/*',
-    omit=[
-        'api/tests/*',
-        'api/config.py',
-    ]
-)
-COV.start()
 
 
 @cli.command()
