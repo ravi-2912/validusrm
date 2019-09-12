@@ -92,7 +92,7 @@ class TestUserService(BaseTestCase):
             self.assertIn('Sorry. That email already exists.', data['message'])
             self.assertIn('fail', data['status'])
 
-    def test_single_uer(self):
+    def test_single_user(self):
         """Ensure get single user behaves correctly."""
         user = add_user('ravi', 'ravi@singh.com')
         with self.client as client:
@@ -114,8 +114,8 @@ class TestUserService(BaseTestCase):
 
     def test_single_user_incorrect_id(self):
         """Ensure error is thrown if the id does not exist."""
-        with self.client:
-            response = self.client.get('/users/999')
+        with self.client as client:
+            response = client.get('/users/999')
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 404)
             self.assertIn('User does not exist', data['message'])
@@ -125,8 +125,8 @@ class TestUserService(BaseTestCase):
         """Ensure get all users behaves correctly."""
         add_user('ravi', 'ravi@singh.com')
         add_user('singh', 'singh@ravi.org')
-        with self.client:
-            response = self.client.get('/users')
+        with self.client as client:
+            response = client.get('/users')
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(data['data']['users']), 2)
