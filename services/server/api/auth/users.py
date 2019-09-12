@@ -13,8 +13,13 @@ auth_blueprint = Blueprint(
 api = Api(auth_blueprint)
 
 
-@auth_blueprint.route('/', methods=['GET'])
+@auth_blueprint.route('/', methods=['GET', 'POST'])
 def index():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        db.session.add(User(username=username, email=email))
+        db.session.commit()
     users = User.query.all()
     return render_template('auth/index.html', users=users)
 
