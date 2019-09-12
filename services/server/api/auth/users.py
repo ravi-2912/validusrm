@@ -8,14 +8,15 @@ from api import db
 
 auth_blueprint = Blueprint(
     'users', __name__,
-    template_folder='./templates'
+    template_folder='./api/templates/'
 )
 api = Api(auth_blueprint)
 
 
 @auth_blueprint.route('/', methods=['GET'])
 def index():
-    return render_template('index.html')
+    users = User.query.all()
+    return render_template('auth/index.html', users=users)
 
 
 class UsersPing(Resource):
