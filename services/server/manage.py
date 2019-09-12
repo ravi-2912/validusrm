@@ -2,7 +2,9 @@ import sys
 import unittest
 import coverage
 from flask.cli import FlaskGroup
+
 from api import create_app, db
+from api.auth.users import User
 
 app = create_app()
 cli = FlaskGroup(create_app=create_app)
@@ -39,6 +41,14 @@ def cov():
 def recreate_db():
     db.drop_all()
     db.create_all()
+    db.session.commit()
+
+
+@cli.command('seed_db')
+def seed_db():
+    """Seeds the database."""
+    db.session.add(User(username='ravi', email="ravi@gmail.com"))
+    db.session.add(User(username='ravisingh', email="ravisingh@hotmail.org"))
     db.session.commit()
 
 
