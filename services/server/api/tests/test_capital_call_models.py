@@ -2,7 +2,7 @@ from sqlalchemy.exc import IntegrityError
 
 from api.tests.base import BaseTestCase
 from api.tests.base import db
-from api.capital_call.models import Fund, Committment
+from api.capital_call.models import Fund, Committment, CapitalCall
 
 
 class TestFundModel(BaseTestCase):
@@ -105,3 +105,13 @@ class TestCapitalCallModel(BaseTestCase):
         db.session.commit()
         self.assertTrue(call.id)
         self.assertEqual(call.investment_name, 'invest_1')
+
+    def test_to_json(self):
+        """Test to to check if CapitalCall JSON is recieved as dict"""
+        call = CapitalCall(
+            investment_name="invest_1",
+            capital_requirement=1500.125
+        )
+        db.session.add(call)
+        db.session.commit()
+        self.assertTrue(isinstance(call.to_json(), dict))
