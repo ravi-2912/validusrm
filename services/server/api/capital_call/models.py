@@ -75,11 +75,6 @@ class CapitalCall(db.Model):
         unique=True
     )
     capital_requirement = db.Column(db.Float, nullable=False)
-    fundinvestments = db.relationship(
-        'FundInvestment',
-        backref='capitalcall',
-        lazy='dynamic'
-    )
 
     def __init__(self, investment_name, capital_requirement, date=None):
         self.investment_name = investment_name
@@ -99,11 +94,7 @@ class CapitalCall(db.Model):
 class FundInvestment(db.Model):
     __tablename__ = 'fundinvestment'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    capitalcall_id = db.Column(
-        db.Integer,
-        db.ForeignKey('capitalcall.id'),
-        nullable=False
-    )
+    capitalcall_id = db.Column(db.Integer, nullable=False) 
     committment_id = db.Column(db.Integer, nullable=False)    
     investment_amount = db.Column(db.Float, nullable=False)
 
