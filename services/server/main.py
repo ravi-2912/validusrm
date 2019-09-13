@@ -23,6 +23,11 @@ def cov():
 
 
 @click.command()
+def test():
+    subprocess.run('python manage.py test')
+
+
+@click.command()
 def run():
     subprocess.run('python manage.py recreate_db')
     subprocess.run('python manage.py seed_db')
@@ -30,6 +35,7 @@ def run():
 
 
 cli.add_command(cov)
+cli.add_command(test)
 cli.add_command(run)
 
 
