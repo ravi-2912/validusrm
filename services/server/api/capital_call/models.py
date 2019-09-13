@@ -3,6 +3,27 @@ import datetime
 from api import db
 
 
+# Table for Many-to-Many Relationship
+FundInvestments = db.Table(
+    'fundinvestments',
+    db.Column(
+        'capitalcall_id',
+        db.Integer,
+        db.ForeignKey('capitalcall.id')
+    ),
+    db.Column(
+        'committment_id',
+        db.Integer,
+        db.ForeignKey('committment.id')
+    ),
+    db.Column(
+        'fundinvestment_id',
+        db.Integer,
+        db.ForeignKey('fundinvestment.id')
+    )
+)
+
+
 class Fund(db.Model):
     __tablename__ = 'fund'
 
@@ -46,6 +67,13 @@ class Committment(db.Model):
         nullable=False
     )
 
+    # Establishing Many-to-Many Relationship
+    fundinvestments = db.relationship(
+        'FundInvestment',
+        secondary=FundInvestments,
+        backref=db.backref('committment', lazy='dynamic')
+    )
+
     def __init__(self, fund_id, amount, date=None):
         self.amount = amount
         self.fund_id = fund_id
@@ -75,6 +103,13 @@ class CapitalCall(db.Model):
         unique=True
     )
     capital_requirement = db.Column(db.Float, nullable=False)
+
+    # Establishing Many-to-Many Relationship
+    fundinvestments = db.relationship(
+        'FundInvestment',
+        secondary=FundInvestments,
+        backref=db.backref('capitalcall', lazy='dynamic')
+    )
 
     def __init__(self, investment_name, capital_requirement, date=None):
         self.investment_name = investment_name
