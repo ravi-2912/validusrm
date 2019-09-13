@@ -124,11 +124,7 @@ class TestCapitalCallModel(BaseTestCase):
 class TestFundInvestmentModel(BaseTestCase):
     def test_add_fund_investment(self):
         """Test to add a new fund investment for a capital call"""
-        fund_invest = FundInvestment(
-            capitalcall_id=1,
-            committment_id=1,
-            investment_amount=1503.245
-        )
+        fund_invest = FundInvestment(investment_amount=1503.245)
         db.session.add(fund_invest)
         db.session.commit()
         self.assertTrue(fund_invest.id)
@@ -136,11 +132,7 @@ class TestFundInvestmentModel(BaseTestCase):
 
     def test_to_json(self):
         """Test to to check if FunInvestment JSON is recieved as dict"""
-        fund_invest = FundInvestment(
-            capitalcall_id=1,
-            committment_id=1,
-            investment_amount=1503.245
-        )
+        fund_invest = FundInvestment(investment_amount=1503.245)
         db.session.add(fund_invest)
         db.session.commit()
         self.assertTrue(isinstance(fund_invest.to_json(), dict))
