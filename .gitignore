@@ -152,4 +152,4 @@ dmypy.json
 .pyre/
 
 # SQLite db file
-*.db
+*.db*
