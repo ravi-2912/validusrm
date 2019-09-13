@@ -1,14 +1,8 @@
-import unittest
 from sqlalchemy.exc import IntegrityError
 
 from api import db
 from api.capital_call.models import Fund
 from api.tests.base import BaseTestCase
-
-
-def add_fund(fundname):
-    
-    return fund
 
 
 class TestFundModel(BaseTestCase):
@@ -34,5 +28,4 @@ class TestFundModel(BaseTestCase):
         db.session.commit()
         duplicate_fund = Fund(fundname='test_fund')
         db.session.add(duplicate_fund)
-        db.session.commit()
         self.assertRaises(IntegrityError, db.session.commit)
