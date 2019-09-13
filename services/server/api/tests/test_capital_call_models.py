@@ -136,3 +136,36 @@ class TestFundInvestmentModel(BaseTestCase):
         db.session.add(fund_invest)
         db.session.commit()
         self.assertTrue(isinstance(fund_invest.to_json(), dict))
+
+
+class TestFundInvestmentsModel(BaseTestCase):
+    def test_add_fund_investments(self):
+        """Test to check Many-to-Many relationship among models"""
+        fund = Fund('fund_1')
+        db.session.add(fund)
+        db.session.commit()
+
+        committment = Committment(fund.id, 10000.0)
+        db.session.add(committment)
+        db.session.commit()
+
+        call = CapitalCall('investment_1', 5000)
+        db.session.add(call)
+        db.session.commit()
+
+        fund_invest = FundInvestment(5000)
+        db.session.add(fund_invest)
+        db.session.commit()
+
+        fund_invest.capitalcall.append(call)
+        fund_invest.committment.append(committment)
+        db.session.commit()
+
+        self.assertTrue(call.fundinvestments)
+        self.assertTrue(committment.fundinvestments)
+        self.assertEqual(call.fundinvestments[0].id, fund_invest.id)
+        self.assertEqual(committment.fundinvestments[0].id, fund_invest.id)
+        self.assertEqual(call.fundinvestments[0].investment_amount,
+                         fund_invest.investment_amount)
+        self.assertEqual(committment.fundinvestments[0].investment_amount,
+                         fund_invest.investment_amount)
