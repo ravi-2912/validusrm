@@ -92,3 +92,16 @@ class TestCommittmentModel(BaseTestCase):
         self.assertEqual(committment1.id, fund.committments[0].id)
         self.assertEqual(committment2.id, fund.committments[1].id)
         self.assertEqual(committment1.fund_id, committment2.fund_id)
+
+
+class TestCapitalCallModel(BaseTestCase):
+    def test_add_call(self):
+        """Test to commit a new call to database"""
+        call = CapitalCall(
+            investment_name='invest_1',
+            capital_requirement=1500
+        )
+        db.session.add(call)
+        db.session.commit()
+        self.assertTrue(call.id)
+        self.assertEqual(call.investment_name, 'invest_1')
