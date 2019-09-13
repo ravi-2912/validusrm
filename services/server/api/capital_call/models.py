@@ -1,4 +1,4 @@
-from sqlalchemy.sql import func
+import datetime
 
 from api import db
 
@@ -8,7 +8,11 @@ class Fund(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     fundname = db.Column(db.String(128), nullable=False, unique=True)
-    date = db.Column(db.DateTime, default=func.now(), nullable=False)
+    date = db.Column(
+        db.DateTime,
+        default=datetime.datetime.now(),
+        nullable=False
+    )
 
     committments = db.relationship(
         'Committment',
@@ -36,7 +40,11 @@ class Committment(db.Model):
         nullable=False
     )
     amount = db.Column(db.Float, nullable=False)
-    date = db.Column(db.DateTime, default=func.now(), nullable=False)
+    date = db.Column(
+        db.DateTime,
+        default=datetime.datetime.now(),
+        nullable=False
+    )
 
     def __init__(self, fund_id, amount, date=None):
         self.amount = amount
