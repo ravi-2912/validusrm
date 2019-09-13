@@ -2,7 +2,7 @@ from sqlalchemy.exc import IntegrityError
 
 from api.tests.base import BaseTestCase
 from api.tests.base import db
-from api.capital_call.models import Fund, Committment, CapitalCall
+from api.capital_call.models import (Fund, Committment, CapitalCall, FundInvestment)
 
 
 class TestFundModel(BaseTestCase):
@@ -57,7 +57,7 @@ class TestCommittmentModel(BaseTestCase):
         db.session.commit()
         self.assertTrue(isinstance(committment.to_json(), dict))
 
-    def test_check_committent_from_fund(self):
+    def test_check_committent_fund_relationship(self):
         """Test to check that Fund & Committment relationship work"""
         fund = Fund(fundname='test_fund')
         db.session.add(fund)
@@ -74,7 +74,10 @@ class TestCommittmentModel(BaseTestCase):
         self.assertEqual(committment.id, fund.committments[0].id)
 
     def test_add_two_committments_from_same_fund(self):
-        """Test to check that two committments with same fund are added"""
+        """
+        Test to check that One-to_Many relationship works between
+        Fund and Committment models.
+        """
         fund = Fund(fundname='fund1')
         db.session.add(fund)
         db.session.commit()
@@ -115,3 +118,18 @@ class TestCapitalCallModel(BaseTestCase):
         db.session.add(call)
         db.session.commit()
         self.assertTrue(isinstance(call.to_json(), dict))
+
+
+class TestFundInvestmentModel(BaseTestCase):
+    def test_add_fund_investment(self):
+        """Test to add a new fund investment for a capital call"""
+        fund_invest = FundInvestment(
+            call_id=1,
+            committment_id=1,
+            fund_id=1,
+            investment_amount=1503.245
+        )
+        db.session.add(fund_invest)
+        db.session.commit()
+        self.assertTrue(fund_invest.id)
+        self.assertEqual(fund_invest.investment_amount,  1503.245)
