@@ -1,6 +1,4 @@
-env
-.dockerignore
-Dockerfile
+# Project specific ignore
 Dockerfile-prod
 
 # See https://github.com/sir-dunxalot/flask-boilerplate/blob/master/.dockerignore
