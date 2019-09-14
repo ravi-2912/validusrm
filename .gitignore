@@ -12,6 +12,7 @@ coverage/
 build/
 
 # snapshots
+__snapshots__/
 *.js.snap
 
 # misc
