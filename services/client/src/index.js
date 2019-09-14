@@ -8,14 +8,16 @@ import AddUser from "./components/AddUser";
 //import App from "./App";
 
 class App extends React.Component {
+  REACT_APP_USERS_SERVICE_URL = "http://localhost:5000";
   state = {
-    users: []
+    users: [],
+    username: "",
+    email: ""
   };
 
   getUsers = () => {
-    let REACT_APP_USERS_SERVICE_URL = "http://localhost:5000";
     axios
-      .get(`${REACT_APP_USERS_SERVICE_URL}/users`)
+      .get(`${this.REACT_APP_USERS_SERVICE_URL}/users`)
       .then(res => {
         let users = res.data.data.users;
         this.setState({ users });
@@ -29,6 +31,31 @@ class App extends React.Component {
     this.getUsers();
   }
 
+  addUser = event => {
+    event.preventDefault();
+    const data = {
+      username: this.state.username,
+      email: this.state.email
+    };
+    axios
+      .post(`${this.REACT_APP_USERS_SERVICE_URL}/users`, data)
+      .then(res => {
+        this.getUsers();
+        this.setState({ username: "", email: "" });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  handleChange = event => {
+    event.preventDefault();
+    const obj = {
+      [event.target.name]: event.target.value
+    };
+    this.setState(obj);
+  };
+
   render() {
     return (
       <section className="section">
@@ -39,7 +66,12 @@ class App extends React.Component {
               <h1 className="title is-1">All Users</h1>
               <hr />
               <br />
-              <AddUser />
+              <AddUser
+                addUser={this.addUser}
+                username={this.state.username}
+                email={this.state.email}
+                handleChange={this.handleChange}
+              />
               <br />
               <br />
               <UsersList users={this.state.users} />
