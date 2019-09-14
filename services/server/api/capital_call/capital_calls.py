@@ -60,5 +60,27 @@ class FundsList(Resource):
             return response_object, 400
 
 
+class Funds(Resource):
+    def get(self, fund_id):
+        """Get single fund details"""
+        response_object = {
+            'status': 'fail',
+            'message': 'Fund does not exist'
+        }
+        try:
+            fund = Fund.query.filter_by(id=int(fund_id)).first()
+            if not fund:
+                return response_object, 404
+            else:
+                response_object = {
+                    'status': 'success',
+                    'data': fund.to_json()
+                }
+                return response_object, 200
+        except ValueError:
+            return response_object, 404
+
+
 api.add_resource(FundsPing, '/funds/ping')
 api.add_resource(FundsList, '/funds')
+api.add_resource(Funds, '/funds/<fund_id>')
