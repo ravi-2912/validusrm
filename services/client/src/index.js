@@ -4,6 +4,7 @@ import axios from "axios";
 import "./index.css";
 import UsersList from "./components/UsersList";
 import * as serviceWorker from "./serviceWorker";
+import AddUser from "./components/AddUser";
 //import App from "./App";
 
 class App extends React.Component {
@@ -33,10 +34,13 @@ class App extends React.Component {
       <section className="section">
         <div className="container">
           <div className="columns">
-            <div className="column is-one-third">
+            <div className="column is-half">
               <br />
               <h1 className="title is-1">All Users</h1>
               <hr />
+              <br />
+              <AddUser />
+              <br />
               <br />
               <UsersList users={this.state.users} />
             </div>
