@@ -31,7 +31,25 @@ class TestCapitalCallService(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('fund!', data['message'])
         self.assertIn('success', data['status'])
-    
+
+    def test_all_funds(self):
+        """Ensure get all funds behaves correctly."""
+        fund1 = add_fund('fund_1')
+        fund2 = add_fund('fund_2')
+        with self.client as client:
+            response = client.get('/funds')
+            data = json.loads(response.data.decode())
+            funds = data['data']['funds']
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(len(funds), 2)
+            self.assertEqual(fund1.fundname, funds[0]['fundname'])
+            self.assertEqual(fund2.fundname, funds[1]['fundname'])
+            self.assertEqual([], funds[0]['committments'])
+            self.assertEqual([], funds[1]['committments'])
+            self.assertEqual([], funds[0]['fundinvestments'])
+            self.assertEqual([], funds[1]['fundinvestments'])
+            self.assertIn('success', data['status'])
+
 
 if __name__ == '__main__':
     unittest.main()
