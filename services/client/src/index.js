@@ -8,7 +8,7 @@ import AddUser from "./components/AddUser";
 //import App from "./App";
 
 class App extends React.Component {
-  REACT_APP_USERS_SERVICE_URL = "http://localhost:5000";
+  REACT_APP_USERS_SERVICE_URL = "http://localhost:5000"; //process.env.REACT_APP_USERS_SERVICE_URL;
   state = {
     users: [],
     username: "",
@@ -63,7 +63,7 @@ class App extends React.Component {
           <div className="columns">
             <div className="column is-half">
               <br />
-              <h1 className="title is-1">All Users</h1>
+              <h1 className="title is-1">ll Users</h1>
               <hr />
               <br />
               <AddUser
