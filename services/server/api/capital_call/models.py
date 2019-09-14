@@ -45,9 +45,9 @@ class Fund(db.Model):
         return {
             'id': self.id,
             'fundname': self.fundname,
-            'date': self.date,
-            'committment': self.committments,
-            'fundinvestments': self.fundinvestments
+            'date': self.date.strftime('%Y-%m-%d T%H:%M:%S.%f'),
+            'committments': [c for c in self.committments],
+            'fundinvestments': [fi for fi in self.fundinvestments]
         }
 
 
