@@ -10,7 +10,9 @@
         "**/env": true,
         "**/__pycache__": true,
         "**/.gitkeep": true,
-        "**/htmlcov": true
+        "**/htmlcov": true,
+        "**/.pytest_cache": true,
+        "**/coverage": true
     },
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
