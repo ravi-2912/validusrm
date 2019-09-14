@@ -31,6 +31,34 @@ class FundsList(Resource):
         }
         return response_object, 200
 
+    def post(self):
+        post_data = request.get_json()
+        response_object = {
+            'status': 'fail',
+            'message': 'Invalid payload.'
+        }
+        if not post_data:
+            return response_object, 400
+
+        fundname = post_data.get('fundname')
+        try:
+            fund = Fund.query.filter_by(fundname=fundname).first()
+            if not fund:
+                db.session.add(Fund(fundname))
+                db.session.commit()
+                response_object = {
+                    'status': 'success',
+                    'message': f'{fundname} was added!'
+                }
+                return response_object, 201
+            else:
+                response_object['message'] = 'Sorry. ' \
+                    'That fund already exists.'
+                return response_object, 400
+        except exc.IntegrityError:
+            db.session.rollback()
+            return response_object, 400
+
 
 api.add_resource(FundsPing, '/funds/ping')
 api.add_resource(FundsList, '/funds')
