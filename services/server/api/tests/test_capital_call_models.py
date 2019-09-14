@@ -1,3 +1,4 @@
+import unittest
 from sqlalchemy.exc import IntegrityError
 
 from api.tests.base import BaseTestCase
@@ -169,10 +170,14 @@ class TestFundInvestmentsModel(BaseTestCase):
         self.assertEqual(fund.fundinvestments[0].id, fund_invest.id)
         self.assertEqual(committment.fundinvestments[0].id, fund_invest.id)
         self.assertEqual(call.fundinvestments[0].id, fund_invest.id)
-        
+
         self.assertEqual(fund.fundinvestments[0].investment_amount,
                          fund_invest.investment_amount)
         self.assertEqual(committment.fundinvestments[0].investment_amount,
                          fund_invest.investment_amount)
         self.assertEqual(call.fundinvestments[0].investment_amount,
                          fund_invest.investment_amount)
+
+
+if __name__ == '__main__':
+    unittest.main()
