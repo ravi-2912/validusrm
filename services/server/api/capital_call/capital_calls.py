@@ -20,4 +20,17 @@ class FundsPing(Resource):
         }
 
 
+class FundsList(Resource):
+    def get(self):
+        """Get all funds"""
+        response_object = {
+            'status': 'success',
+            'data': {
+                'funds': [fund.to_json() for fund in Fund.query.all()]
+            }
+        }
+        return response_object, 200
+
+
 api.add_resource(FundsPing, '/funds/ping')
+api.add_resource(FundsList, '/funds')
