@@ -16,7 +16,7 @@ def add_user(username, email):
 class TestUserService(BaseTestCase):
     """Tests for the Users Service."""
 
-    def test_users(self):
+    def test_users_ping(self):
         """Ensure the /ping route behaves correctly."""
         response = self.client.get('/users/ping')
         data = json.loads(response.data.decode())
