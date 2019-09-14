@@ -157,15 +157,22 @@ class TestFundInvestmentsModel(BaseTestCase):
         db.session.add(fund_invest)
         db.session.commit()
 
-        fund_invest.capitalcall.append(call)
+        fund_invest.fund.append(fund)
         fund_invest.committment.append(committment)
+        fund_invest.capitalcall.append(call)
         db.session.commit()
 
-        self.assertTrue(call.fundinvestments)
+        self.assertTrue(fund.fundinvestments)
         self.assertTrue(committment.fundinvestments)
-        self.assertEqual(call.fundinvestments[0].id, fund_invest.id)
+        self.assertTrue(call.fundinvestments)
+
+        self.assertEqual(fund.fundinvestments[0].id, fund_invest.id)
         self.assertEqual(committment.fundinvestments[0].id, fund_invest.id)
-        self.assertEqual(call.fundinvestments[0].investment_amount,
+        self.assertEqual(call.fundinvestments[0].id, fund_invest.id)
+        
+        self.assertEqual(fund.fundinvestments[0].investment_amount,
                          fund_invest.investment_amount)
         self.assertEqual(committment.fundinvestments[0].investment_amount,
+                         fund_invest.investment_amount)
+        self.assertEqual(call.fundinvestments[0].investment_amount,
                          fund_invest.investment_amount)
