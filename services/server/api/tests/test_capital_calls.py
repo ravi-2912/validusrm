@@ -49,6 +49,71 @@ class TestCapitalCallService(BaseTestCase):
             self.assertEqual([], funds[0]['fundinvestments'])
             self.assertEqual([], funds[1]['fundinvestments'])
             self.assertIn('success', data['status'])
+    
+    def test_add_fund(self):
+        """Ensure a new fund can be added to the database."""
+        with self.client as client:
+            response = client.post(
+                '/funds',
+                data=json.dumps({
+                    'fundname': 'fund_1',
+                }),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 201)
+            self.assertIn('fund_1 was added!', data['message'])
+            self.assertIn('success', data['status'])
+
+    def test_add_fund_invalid_json(self):
+        """Ensure error is thrown if the JSON object is empty."""
+        with self.client as client:
+            response = client.post(
+                '/funds',
+                data=json.dumps({}),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('Invalid payload.', data['message'])
+            self.assertIn('fail', data['status'])
+
+    def test_add_fund_invalid_json_keys(self):
+        """
+        Ensure error is thrown if the JSON object does not have a fundname key.
+        """
+        with self.client as client:
+            response = client.post(
+                '/funds',
+                data=json.dumps({'something': 'fund_!'}),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('Invalid payload.', data['message'])
+            self.assertIn('fail', data['status'])
+
+    def test_add_fund_duplicate_name(self):
+        """Ensure error is thrown if the fund already exists."""
+        with self.client as client:
+            client.post(
+                '/funds',
+                data=json.dumps({
+                    'fundname': 'fund_1',
+                }),
+                content_type='application/json',
+            )
+            response = client.post(
+                '/funds',
+                data=json.dumps({
+                    'fundname': 'fund_1',
+                }),
+                content_type='application/json',
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('Sorry. That fund already exists.', data['message'])
+            self.assertIn('fail', data['status'])
 
 
 if __name__ == '__main__':
