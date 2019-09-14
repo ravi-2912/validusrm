@@ -2,8 +2,7 @@ import json
 import unittest
 
 from api.tests.base import BaseTestCase
-from api.capital_call.models import Fund, \
-    Committment
+from api.capital_call.models import Fund
 from api import db
 
 
@@ -14,14 +13,7 @@ def add_fund(fundname):
     return fund
 
 
-def add_committment(fund_id, amount, date=None):
-    committment = Committment(fund_id, amount, date)
-    db.session.add(committment)
-    db.session.commit()
-    return committment
-
-
-class TestCapitalCallService(BaseTestCase):
+class TestFundsService(BaseTestCase):
     """Tests for the Capital Call Service."""
 
     def test_funds_ping(self):
@@ -49,7 +41,7 @@ class TestCapitalCallService(BaseTestCase):
             self.assertEqual([], funds[0]['fundinvestments'])
             self.assertEqual([], funds[1]['fundinvestments'])
             self.assertIn('success', data['status'])
-    
+
     def test_add_fund(self):
         """Ensure a new fund can be added to the database."""
         with self.client as client:
@@ -113,6 +105,34 @@ class TestCapitalCallService(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
             self.assertIn('Sorry. That fund already exists.', data['message'])
+            self.assertIn('fail', data['status'])
+
+    def test_single_fund(self):
+        """Ensure get single fund behaves correctly."""
+        fund = add_fund('fund_1')
+        with self.client as client:
+            response = client.get(f'/funds/{fund.id}')
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('fund_1', data['data']['fundname'])
+            self.assertIn('success', data['status'])
+
+    def test_single_fund_no_id(self):
+        """Ensure error is thrown if an id is not provided."""
+        with self.client as client:
+            response = client.get('/funds/blah')
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 404)
+            self.assertIn('Fund does not exist', data['message'])
+            self.assertIn('fail', data['status'])
+
+    def test_single_fund_incorrect_id(self):
+        """Ensure error is thrown if the id does not exist."""
+        with self.client as client:
+            response = client.get('/funds/999')
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 404)
+            self.assertIn('Fund does not exist', data['message'])
             self.assertIn('fail', data['status'])
 
 
