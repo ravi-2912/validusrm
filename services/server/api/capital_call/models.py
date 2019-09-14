@@ -45,6 +45,9 @@ class Fund(db.Model):
         return {
             'id': self.id,
             'fundname': self.fundname,
+            'date': self.date,
+            'committment': self.committments,
+            'fundinvestments': self.fundinvestments
         }
 
 
@@ -81,7 +84,8 @@ class Committment(db.Model):
             'id': self.id,
             'fund_id': self.fund_id,
             'amount': self.amount,
-            'date': self.date
+            'date': self.date,
+            'fundinvestments': self.fundinvestments
         }
 
 
@@ -110,7 +114,8 @@ class CapitalCall(db.Model):
             'id': self.id,
             'investment_name': self.investment_name,
             'capital_requirement': self.capital_requirement,
-            'date': self.date
+            'date': self.date,
+            'fundinvestments': self.fundinvestments
         }
 
 
