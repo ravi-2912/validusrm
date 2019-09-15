@@ -1,11 +1,14 @@
 import sys
 import unittest
 from flask.cli import FlaskGroup
+from datetime.datetime import strptime
 
 from testcoverage import COV
 from api import create_app, db
 from api.auth.users import User
 from api.capital_call.funds import Fund
+from api.capital_call.committments import Committment
+import api.capital_call.utils as UTILS
 
 
 app = create_app()
@@ -41,9 +44,16 @@ def seed_db():
     """Seeds the database."""
     db.session.add(User(username='ravi', email="ravi@gmail.com"))
     db.session.add(User(username='ravisingh', email="ravisingh@hotmail.org"))
-    db.session.add(Fund('fund_1'))
-    db.session.add(Fund('fund_2'))
     db.session.commit()
+    UTILS.add_fund('fund_1')
+    UTILS.add_fund('fund_2')
+    UTILS.add_fund('fund_3')
+    UTILS.add_fund('fund_4')
+    UTILS.add_committment(1, 10000000, strptime('31/12/2017', '%d/%m/%Y'))
+    UTILS.add_committment(2, 15000000, strptime('31/03/2018', '%d/%m/%Y'))
+    UTILS.add_committment(3, 10000000, strptime('30/06/2018', '%d/%m/%Y'))
+    UTILS.add_committment(4, 15000000, strptime('30/09/2018', '%d/%m/%Y'))
+    UTILS.add_committment(1, 10000000, strptime('31/12/2018', '%d/%m/%Y'))
 
 
 @cli.command()
