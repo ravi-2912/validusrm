@@ -1,15 +1,10 @@
-from flask import Blueprint, request
-from flask_restful import Resource, Api
+from flask import request
+from flask_restful import Resource
 from sqlalchemy import exc
 
 from api.capital_call.models import Fund
+from api.capital_call import api
 from api import db
-
-
-capital_call_blueprint = Blueprint(
-    'capital_calls', __name__
-)
-api = Api(capital_call_blueprint)
 
 
 class FundsPing(Resource):

@@ -5,6 +5,7 @@ from flask.cli import FlaskGroup
 from testcoverage import COV
 from api import create_app, db
 from api.auth.users import User
+from api.capital_call.funds import Fund
 
 
 app = create_app()
@@ -40,6 +41,8 @@ def seed_db():
     """Seeds the database."""
     db.session.add(User(username='ravi', email="ravi@gmail.com"))
     db.session.add(User(username='ravisingh', email="ravisingh@hotmail.org"))
+    db.session.add(Fund('fund_1'))
+    db.session.add(Fund('fund_2'))
     db.session.commit()
 
 
@@ -47,7 +50,7 @@ def seed_db():
 def test():
     """Runs the tests without code coverage"""
     #tests = unittest.TestLoader().discover('api/tests', pattern='test_*.py')
-    from api.tests.test_capital_calls import TestFundsService
+    from api.tests.test_funds import TestFundsService
     tests = unittest.TestLoader().loadTestsFromTestCase(TestFundsService)
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
