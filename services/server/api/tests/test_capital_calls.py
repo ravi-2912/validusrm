@@ -135,6 +135,110 @@ class TestFundsService(BaseTestCase):
             self.assertIn('Fund does not exist', data['message'])
             self.assertIn('fail', data['status'])
 
+    def test_update_fund(self):
+        """Ensure a fund name can be updated in the database."""
+        fund = add_fund('fund1')
+        with self.client as client:
+            response = client.put(
+                f'/funds/{fund.id}',
+                data=json.dumps({
+                    'fundname': 'fund_1',
+                }),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 202)
+            self.assertIn('fund1 was updated to fund_1!', data['message'])
+            self.assertIn('success', data['status'])
+            self.assertEqual(fund.id, data["data"]["id"])
+            self.assertEqual('fund_1', data["data"]["fundname"])
+            self.assertNotEqual('fund1', data["data"]["fundname"])
+
+    def test_update_fund_invalid_json(self):
+        """Ensure error is thrown if the JSON object is empty."""
+        fund = add_fund('fund_!')
+        with self.client as client:
+            response = client.put(
+                f'/funds/{fund.id}',
+                data=json.dumps({}),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 405)
+            self.assertIn('Invalid payload.', data['message'])
+            self.assertIn('fail', data['status'])
+            self.assertEqual(fund.id, data["data"]["id"])
+            self.assertEqual('fund_!', data["data"]["fundname"])
+            self.assertNotEqual('fund_1', data["data"]["fundname"])
+
+    def test_update_fund_duplicate_name(self):
+        """Ensure error is thrown if the updated fund already exists."""
+        add_fund("fund_1")
+        fund_2 = add_fund("fund_!")
+        with self.client as client:
+            response = client.put(
+                f'/funds/{fund_2.id}',
+                data=json.dumps({
+                    'fundname': 'fund_1',
+                }),
+                content_type='application/json',
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 405)
+            self.assertIn('Sorry. That fund already exists.', data['message'])
+            self.assertIn('fail', data['status'])
+            self.assertEqual(fund_2.id, data["data"]["id"])
+            self.assertEqual('fund_!', data["data"]["fundname"])
+            self.assertNotEqual('fund_2', data["data"]["fundname"])
+
+    def test_update_fund_incorrect_id(self):
+        """Ensure error is thrown if the id is incorrect for updating fund."""
+        add_fund("fund!")
+        with self.client as client:
+            response = client.put(
+                '/funds/999',
+                data=json.dumps({
+                    'fundname': 'fund_1',
+                }),
+                content_type='application/json',
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 405)
+            self.assertIn('Sorry. That fund does not exist', data['message'])
+            self.assertIn('fail', data['status'])
+            self.assertFalse(data['data'])
+
+    def test_update_fund_no_id(self):
+        """Ensure error is thrown if an id is not provided."""
+        add_fund("fund!")
+        with self.client as client:
+            response = client.put(
+                '/funds/blah',
+                data=json.dumps({
+                    'fundname': 'fund_1',
+                }),
+                content_type='application/json',
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 405)
+            self.assertIn('Sorry. That fund does not exists.', data['message'])
+            self.assertIn('fail', data['status'])
+            self.assertFalse(data['data'])
+
+    def test_update_fund_no_change(self):
+        fund = add_fund('fund_1')
+        with self.client as client:
+            response = client.put(
+                f'/funds/{fund.id}',
+                data=json.dumps({
+                    'fundname': 'fund_1',
+                }),
+                content_type='application/json',
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 405)
+            self.assertIn('Sorry. That fund already exists', data['message'])
+
 
 if __name__ == '__main__':
     unittest.main()
