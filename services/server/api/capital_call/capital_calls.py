@@ -118,6 +118,27 @@ class Funds(Resource):
             db.session.rollback()
             return response_object, 405
 
+    def delete(self, fund_id):
+        """Delete single fund details"""
+        response_object = {
+            'status': 'fail',
+            'message': 'Fund does not exist'
+        }
+        try:
+            fund = Fund.query.filter_by(id=int(fund_id)).first()
+            if not fund:
+                return response_object, 404
+            else:
+                db.session.delete(fund)
+                db.session.commit()
+                response_object = {
+                    'status': 'success',
+                    'message': f'{fund.fundname} successfully deleted.'
+                }
+                return response_object, 200
+        except ValueError:
+            return response_object, 404
+
 
 api.add_resource(FundsPing, '/funds/ping')
 api.add_resource(FundsList, '/funds')
