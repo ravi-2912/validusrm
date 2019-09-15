@@ -2,15 +2,9 @@ import json
 import unittest
 
 from api.tests.base import BaseTestCase
-from api.capital_call.funds import Fund
-from api import db
+import api.capital_call.utils as UTILS
 
-
-def add_fund(fundname):
-    fund = Fund(fundname)
-    db.session.add(fund)
-    db.session.commit()
-    return fund
+TYPE = 'Fund'
 
 
 class TestFundsService(BaseTestCase):
@@ -21,13 +15,13 @@ class TestFundsService(BaseTestCase):
         response = self.client.get('/funds/ping')
         data = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 200)
-        self.assertIn('fund!', data['message'])
+        self.assertIn(UTILS.PING_SUCCESS, data['message'])
         self.assertIn('success', data['status'])
 
     def test_all_funds(self):
         """Ensure get all funds behaves correctly."""
-        fund1 = add_fund('fund_1')
-        fund2 = add_fund('fund_2')
+        fund1 = UTILS.add_fund('fund_1')
+        fund2 = UTILS.add_fund('fund_2')
         with self.client as client:
             response = client.get('/funds')
             data = json.loads(response.data.decode())
@@ -54,7 +48,7 @@ class TestFundsService(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 201)
-            self.assertIn('fund_1 was added!', data['message'])
+            self.assertIn(UTILS.ADDED(TYPE, 'fund_1'), data['message'])
             self.assertIn('success', data['status'])
 
     def test_add_fund_invalid_json(self):
@@ -67,7 +61,7 @@ class TestFundsService(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
-            self.assertIn('Invalid payload.', data['message'])
+            self.assertIn(UTILS.INVALID_PAYLD, data['message'])
             self.assertIn('fail', data['status'])
 
     def test_add_fund_invalid_json_keys(self):
@@ -82,7 +76,7 @@ class TestFundsService(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
-            self.assertIn('Invalid payload.', data['message'])
+            self.assertIn(f'{UTILS.INTEGRITY_ERR} Funds', data['message'])
             self.assertIn('fail', data['status'])
 
     def test_add_fund_duplicate_name(self):
@@ -104,12 +98,12 @@ class TestFundsService(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
-            self.assertIn('Sorry. That fund already exists.', data['message'])
+            self.assertIn(f'{UTILS.EXISTS(TYPE, "fund_1")}', data['message'])
             self.assertIn('fail', data['status'])
 
     def test_single_fund(self):
         """Ensure get single fund behaves correctly."""
-        fund = add_fund('fund_1')
+        fund = UTILS.add_fund('fund_1')
         with self.client as client:
             response = client.get(f'/funds/{fund.id}')
             data = json.loads(response.data.decode())
@@ -123,7 +117,7 @@ class TestFundsService(BaseTestCase):
             response = client.get('/funds/blah')
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 404)
-            self.assertIn('Fund does not exist', data['message'])
+            self.assertIn(f'{UTILS.VALUE_ERR} Funds', data['message'])
             self.assertIn('fail', data['status'])
 
     def test_single_fund_incorrect_id(self):
@@ -132,12 +126,13 @@ class TestFundsService(BaseTestCase):
             response = client.get('/funds/999')
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 404)
-            self.assertIn('Fund does not exist', data['message'])
+            self.assertIn(f'{UTILS.NOT_EXISTS(TYPE, "999")}',
+                          data['message'])
             self.assertIn('fail', data['status'])
 
     def test_update_fund(self):
         """Ensure a fund name can be updated in the database."""
-        fund = add_fund('fund1')
+        fund = UTILS.add_fund('fund1')
         with self.client as client:
             response = client.put(
                 f'/funds/{fund.id}',
@@ -148,15 +143,14 @@ class TestFundsService(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 202)
-            self.assertIn('fund1 was updated to fund_1!', data['message'])
+            self.assertIn(UTILS.UPDATED(TYPE, 'fund_1'), data['message'])
             self.assertIn('success', data['status'])
             self.assertEqual(fund.id, data["data"]["id"])
             self.assertEqual('fund_1', data["data"]["fundname"])
-            self.assertNotEqual('fund1', data["data"]["fundname"])
 
     def test_update_fund_invalid_json(self):
         """Ensure error is thrown if the JSON object is empty."""
-        fund = add_fund('fund_!')
+        fund = UTILS.add_fund('fund_!')
         with self.client as client:
             response = client.put(
                 f'/funds/{fund.id}',
@@ -165,16 +159,14 @@ class TestFundsService(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 405)
-            self.assertIn('Invalid payload.', data['message'])
+            self.assertIn(UTILS.INVALID_PAYLD, data['message'])
             self.assertIn('fail', data['status'])
-            self.assertEqual(fund.id, data["data"]["id"])
-            self.assertEqual('fund_!', data["data"]["fundname"])
-            self.assertNotEqual('fund_1', data["data"]["fundname"])
+            self.assertFalse(data['data'])
 
     def test_update_fund_duplicate_name(self):
         """Ensure error is thrown if the updated fund already exists."""
-        add_fund("fund_1")
-        fund_2 = add_fund("fund_!")
+        fund_1 = UTILS.add_fund("fund_1")
+        fund_2 = UTILS.add_fund("fund_!")
         with self.client as client:
             response = client.put(
                 f'/funds/{fund_2.id}',
@@ -185,15 +177,14 @@ class TestFundsService(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 405)
-            self.assertIn('Sorry. That fund already exists.', data['message'])
+            self.assertIn(f'{UTILS.EXISTS(TYPE,"fund_1")}',
+                          data['message'])
             self.assertIn('fail', data['status'])
-            self.assertEqual(fund_2.id, data["data"]["id"])
-            self.assertEqual('fund_!', data["data"]["fundname"])
-            self.assertNotEqual('fund_2', data["data"]["fundname"])
+            self.assertEqual(fund_1.id, data["data"]["id"])
 
     def test_update_fund_incorrect_id(self):
         """Ensure error is thrown if the id is incorrect for updating fund."""
-        add_fund("fund!")
+        UTILS.add_fund("fund!")
         with self.client as client:
             response = client.put(
                 '/funds/999',
@@ -204,13 +195,14 @@ class TestFundsService(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 405)
-            self.assertIn('Sorry. That fund does not exist', data['message'])
+            self.assertIn(UTILS.NOT_EXISTS(TYPE, '999'),
+                          data['message'])
             self.assertIn('fail', data['status'])
             self.assertFalse(data['data'])
 
     def test_update_fund_no_id(self):
         """Ensure error is thrown if an id is not provided."""
-        add_fund("fund!")
+        UTILS.add_fund("fund!")
         with self.client as client:
             response = client.put(
                 '/funds/blah',
@@ -221,13 +213,14 @@ class TestFundsService(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 405)
-            self.assertIn('Sorry. That fund does not exists.', data['message'])
+            self.assertIn(UTILS.NOT_EXISTS(TYPE, 'blah'),
+                          data['message'])
             self.assertIn('fail', data['status'])
             self.assertFalse(data['data'])
 
     def test_update_fund_no_change(self):
         """Ensure correct response recieved for no change to updated fund"""
-        fund = add_fund('fund_1')
+        fund = UTILS.add_fund('fund_1')
         with self.client as client:
             response = client.put(
                 f'/funds/{fund.id}',
@@ -238,17 +231,17 @@ class TestFundsService(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 405)
-            self.assertIn('Sorry. That fund already exists', data['message'])
+            self.assertIn(UTILS.EXISTS(TYPE, 'fund_1'), data['message'])
 
     def test_delete_fund(self):
         """Ensure fund is deleted"""
-        fund = add_fund('fund_1')
+        fund = UTILS.add_fund('fund_1')
         with self.client as client:
             res = client.delete(f'/funds/{fund.id}')
             data = json.loads(res.data.decode())
             self.assertEqual(res.status_code, 200)
             self.assertIn('success', data['status'])
-            self.assertIn(f'{fund.fundname} successfully deleted.',
+            self.assertIn(UTILS.DELETED(TYPE, fund.id),
                           data['message'])
 
 
