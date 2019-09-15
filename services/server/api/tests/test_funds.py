@@ -2,7 +2,7 @@ import json
 import unittest
 
 from api.tests.base import BaseTestCase
-from api.capital_call.models import Fund
+from api.capital_call.funds import Fund
 from api import db
 
 
