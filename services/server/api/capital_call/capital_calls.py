@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request
 from flask_restful import Resource, Api
 from sqlalchemy import exc
 
@@ -79,6 +79,44 @@ class Funds(Resource):
                 return response_object, 200
         except ValueError:
             return response_object, 404
+
+    def put(self, fund_id):
+        put_data = request.get_json()
+        try:
+            fund = Fund.query.get(fund_id)
+            response_object = {
+                'status': 'fail',
+                'message': 'Invalid payload.',
+                'data': fund.to_json() if fund else []
+            }
+            if not put_data:
+                return response_object, 405
+
+            fundname = put_data.get('fundname')
+            existingFunds = Fund.query.filter_by(fundname=fundname).all()
+            if not existingFunds:
+                if fund:
+                    oldfundname = fund.fundname
+                    fund.fundname = fundname
+                    db.session.commit()
+                    response_object = {
+                        'status': 'success',
+                        'message': f'{oldfundname} was updated to '
+                                   f'{fundname}!',
+                        'data': Fund.query.get(fund_id).to_json()
+                    }
+                    return response_object, 202
+                else:
+                    response_object['message'] = 'Sorry. ' \
+                        'That fund does not exists.'
+                    return response_object, 405
+            else:
+                response_object['message'] = 'Sorry. ' \
+                    'That fund already exists.'
+                return response_object, 405
+        except exc.IntegrityError:
+            db.session.rollback()
+            return response_object, 405
 
 
 api.add_resource(FundsPing, '/funds/ping')

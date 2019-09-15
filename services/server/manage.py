@@ -46,7 +46,9 @@ def seed_db():
 @cli.command()
 def test():
     """Runs the tests without code coverage"""
-    tests = unittest.TestLoader().discover('api/tests', pattern='test_*.py')
+    #tests = unittest.TestLoader().discover('api/tests', pattern='test_*.py')
+    from api.tests.test_capital_calls import TestFundsService
+    tests = unittest.TestLoader().loadTestsFromTestCase(TestFundsService)
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
         return 0

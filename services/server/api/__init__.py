@@ -29,6 +29,8 @@ def create_app(script_info=None):
     # register blueprints
     from api.auth.users import auth_blueprint
     app.register_blueprint(auth_blueprint)
+    from api.capital_call.capital_calls import capital_call_blueprint
+    app.register_blueprint(capital_call_blueprint)
 
     # shell context for flask cli
     @app.shell_context_processor
