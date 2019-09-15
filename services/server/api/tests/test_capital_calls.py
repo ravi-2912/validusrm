@@ -226,6 +226,7 @@ class TestFundsService(BaseTestCase):
             self.assertFalse(data['data'])
 
     def test_update_fund_no_change(self):
+        """Ensure correct response recieved for no change to updated fund"""
         fund = add_fund('fund_1')
         with self.client as client:
             response = client.put(
@@ -238,6 +239,17 @@ class TestFundsService(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 405)
             self.assertIn('Sorry. That fund already exists', data['message'])
+
+    def test_delete_fund(self):
+        """Ensure fund is deleted"""
+        fund = add_fund('fund_1')
+        with self.client as client:
+            res = client.delete(f'/funds/{fund.id}')
+            data = json.loads(res.data.decode())
+            self.assertEqual(res.status_code, 200)
+            self.assertIn('success', data['status'])
+            self.assertIn(f'{fund.fundname} successfully deleted.',
+                          data['message'])
 
 
 if __name__ == '__main__':
