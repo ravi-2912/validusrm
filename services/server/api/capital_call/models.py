@@ -84,8 +84,8 @@ class Committment(db.Model):
             'id': self.id,
             'fund_id': self.fund_id,
             'amount': self.amount,
-            'date': self.date,
-            'fundinvestments': self.fundinvestments
+            'date': self.date.strftime('%Y-%m-%d T%H:%M:%S.%f'),
+            'fundinvestments': [fi for fi in self.fundinvestments]
         }
 
 
