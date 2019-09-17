@@ -32,8 +32,6 @@ class TestFundsService(BaseTestCase):
             self.assertEqual(fund2.fundname, funds[1]['fundname'])
             self.assertEqual([], funds[0]['committments'])
             self.assertEqual([], funds[1]['committments'])
-            self.assertEqual([], funds[0]['fundinvestments'])
-            self.assertEqual([], funds[1]['fundinvestments'])
             self.assertIn('success', data['status'])
 
     def test_add_fund(self):

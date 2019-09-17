@@ -81,7 +81,7 @@ class Funds(Resource):
                 )
             else:
                 return UTILS.api_response(
-                    msg=UTILS.EXISTS(TYPE, fund.id),
+                    msg=UTILS.SUCCESS(TYPE, fund.id),
                     code=200,
                     data=fund.to_json()
                 )
