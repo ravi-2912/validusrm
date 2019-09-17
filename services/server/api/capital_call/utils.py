@@ -5,7 +5,7 @@ from api import db
 
 PING_SUCCESS = 'Ping Successfull!'
 NO_FUNDSLIST = 'No funds in database.'
-YES_FUNDSLIST = 'Funds retrieved successfully.',
+YES_FUNDSLIST = 'Funds retrieved successfully.'
 INVALID_PAYLD = 'Invalid payload.'
 INTEGRITY_ERR = 'Integrity Error!!'
 VALUE_ERR = 'Value Error!!'
@@ -55,6 +55,7 @@ def add_committment(fund_id, amount, date=None):
     committment = Committment(fund_id, amount, date)
     db.session.add(committment)
     db.session.commit()
+    return committment
 
 
 def delete(obj):
