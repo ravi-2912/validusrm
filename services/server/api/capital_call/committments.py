@@ -29,7 +29,9 @@ class CommittmentsList(Resource):
         """Get all committments"""
         committments = Committment.query.all()
         return UTILS.api_response(
-            msg=UTILS.YES_FUNDSLIST if committments else UTILS.NO_FUNDSLIST,
+            msg=(UTILS.YES_FUNDSLIST
+                 if committments
+                 else UTILS.NO_FUNDSLIST),
             code=200,
             data={'committments': [c.to_json() for c in committments]}
         )
@@ -47,7 +49,7 @@ class CommittmentsList(Resource):
         try:
             committment = UTILS.add_committment(fund_id, amount)
             return UTILS.api_response(
-                msg=UTILS.ADDED(TYPE, amount),
+                msg=UTILS.ADDED(TYPE, f'{committment.id} in fund {fund_id}'),
                 code=201,
                 data=committment.to_json()
                 )
@@ -60,5 +62,96 @@ class CommittmentsList(Resource):
             )
 
 
+class Committments(Resource):
+    __name__ = 'Committments'
+
+    def get(self, committment_id):
+        """Get single committment details"""
+        try:
+            committment = Committment.query \
+                            .filter_by(id=int(committment_id)) \
+                            .first()
+            if not committment:
+                return UTILS.api_response(
+                    msg=UTILS.NOT_EXISTS(TYPE, committment_id),
+                    code=404,
+                )
+            else:
+                return UTILS.api_response(
+                    msg=UTILS.SUCCESS(TYPE, committment.id),
+                    code=200,
+                    data=committment.to_json()
+                )
+        except ValueError as e:
+            return UTILS.api_response(
+                msg=f'{UTILS.VALUE_ERR} {self.__name__}',
+                code=404,
+                data=f'{str(e)}'
+            )
+
+    def put(self, committment_id):
+        """Update single committment details"""
+        put_data = request.get_json()
+        fund_id = put_data.get('fund_id')
+        amount = put_data.get("amount")
+        date = put_data.get("date")
+        if not put_data:
+            return UTILS.api_response(
+                msg=UTILS.INVALID_PAYLD,
+                code=405
+            )
+        try:
+            committment = Committment.query.get(committment_id)
+            if committment:
+                if fund_id:
+                    committment = UTILS.update(committment, 'fund_id', fund_id)
+                if amount:
+                    committment = UTILS.update(committment, 'amount', amount)
+                if date:
+                    committment = UTILS.update(committment, 'date', date)
+                return UTILS.api_response(
+                    msg=UTILS.UPDATED(TYPE, f'{committment.id} in fund {committment.fund_id}'),
+                    code=202,
+                    data=Committment.query.get(committment_id).to_json()
+                )
+            else:
+                return UTILS.api_response(
+                    msg=UTILS.NOT_EXISTS(TYPE, committment_id),
+                    code=405,
+                )
+        except exc.IntegrityError as e:
+            db.session.rollback()
+            return UTILS.api_response(
+                msg=f'{UTILS.INTEGRITY_ERR} {self.__name__}',
+                code=405,
+                data=f'{str(e)}'
+            )
+
+    def delete(self, committment_id):
+        """Delete single committment details"""
+        try:
+            committment = Committment.query \
+                            .filter_by(id=int(committment_id)) \
+                            .first()
+            if not committment:
+                return UTILS.api_response(
+                    msg=UTILS.NOT_EXISTS(TYPE, committment_id),
+                    code=404,
+                )
+            else:
+                UTILS.delete(committment)
+                return UTILS.api_response(
+                    msg=UTILS.DELETED(TYPE, committment.id),
+                    code=200
+                )
+        except ValueError as e:
+            return UTILS.api_response(
+                msg=f'{UTILS.VALUE_ERR} {self.__name__}',
+                code=404,
+                data=f'{str(e)}'
+            )
+
+
 api.add_resource(CommittmentsPing, '/committments/ping')
 api.add_resource(CommittmentsList, '/committments')
+api.add_resource(Committments, '/committments/<committment_id>')
