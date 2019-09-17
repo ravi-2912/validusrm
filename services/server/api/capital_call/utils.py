@@ -11,6 +11,10 @@ INTEGRITY_ERR = 'Integrity Error!!'
 VALUE_ERR = 'Value Error!!'
 
 
+def SUCCESS(type, x):
+    return f'{type} {x} found successfully.'
+
+
 def ADDED(type, x):
     return f'{type} {x} was added.'
 
