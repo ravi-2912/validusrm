@@ -74,7 +74,7 @@ class TestFundsService(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
-            self.assertIn(f'{UTILS.INTEGRITY_ERR} Funds', data['message'])
+            self.assertIn(f'{UTILS.INTEGRITY_ERR} {TYPE}s', data['message'])
             self.assertIn('fail', data['status'])
 
     def test_add_fund_duplicate_name(self):
