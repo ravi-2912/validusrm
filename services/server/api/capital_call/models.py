@@ -113,7 +113,7 @@ class CapitalCall(db.Model):
             'id': self.id,
             'investment_name': self.investment_name,
             'capital_requirement': self.capital_requirement,
-            'date': self.date,
+            'date': self.date.strftime('%Y-%m-%d T%H:%M:%S.%f'),
             'fundinvestments': self.fundinvestments
         }
 
