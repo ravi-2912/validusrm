@@ -175,8 +175,7 @@ class TestFundsService(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 405)
-            self.assertIn(f'{UTILS.EXISTS(TYPE,"fund_1")}',
-                          data['message'])
+            self.assertIn(UTILS.NO_CHANGE(TYPE, 'fund_1'), data['message'])
             self.assertIn('fail', data['status'])
             self.assertEqual(fund_1.id, data["data"]["id"])
 
@@ -229,7 +228,7 @@ class TestFundsService(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 405)
-            self.assertIn(UTILS.EXISTS(TYPE, 'fund_1'), data['message'])
+            self.assertIn(UTILS.NO_CHANGE(TYPE, 'fund_1'), data['message'])
 
     def test_delete_fund(self):
         """Ensure fund is deleted"""

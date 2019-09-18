@@ -105,7 +105,7 @@ class Funds(Resource):
             existingFunds = Fund.query.filter_by(fundname=fundname).first()
             if existingFunds:
                 return UTILS.api_response(
-                    msg=UTILS.EXISTS(TYPE, fundname),
+                    msg=UTILS.NO_CHANGE(TYPE, fundname),
                     code=405,
                     data=existingFunds.to_json()
                 )
