@@ -101,30 +101,35 @@ class Committments(Resource):
                 code=405
             )
         try:
-            committment = Committment.query.get(committment_id)
-            if committment:
+            c = Committment.query.get(committment_id)
+            if c:
                 if fund_id:
-                    if fund_id != committment.fund_id:
-                        committment = UTILS.update(committment, 'fund_id', int(fund_id))
+                    if fund_id != c.fund_id:
+                        c = UTILS.update(c, 'fund_id', int(fund_id))
                     else:
                         return UTILS.api_response(
-                            msg=UTILS.NO_CHANGE(TYPE, f'{committment.id} in fund {committment.fund_id}'),
+                            msg=UTILS.NO_CHANGE(
+                                TYPE, f'{c.id} in fund {c.fund_id}'
+                            ),
                             code=400,
-                            data=Committment.query.get(committment_id).to_json()
+                            data=c.query.get(committment_id).to_json()
                         )
                 if amount:
-                    if amount != committment.amount:
-                        committment = UTILS.update(committment, 'amount', float(amount))
+                    if amount != c.amount:
+                        c = UTILS.update(c, 'amount', float(amount))
                     else:
                         return UTILS.api_response(
-                            msg=UTILS.NO_CHANGE(TYPE, f'{committment.id} in fund {committment.fund_id}'),
+                            msg=UTILS.NO_CHANGE(
+                                TYPE, f'{c.id} in fund {c.fund_id}'
+                            ),
                             code=400,
-                            data=Committment.query.get(committment_id).to_json()
+                            data=Committment.query
+                            .get(committment_id).to_json()
                         )
                 if date:
-                    committment = UTILS.update(committment, 'date', date)
+                    c = UTILS.update(c, 'date', date)
                 return UTILS.api_response(
-                    msg=UTILS.UPDATED(TYPE, f'{committment.id} in fund {committment.fund_id}'),
+                    msg=UTILS.UPDATED(TYPE, f'{c.id} in fund {c.fund_id}'),
                     code=202,
                     data=Committment.query.get(committment_id).to_json()
                 )
