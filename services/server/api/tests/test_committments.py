@@ -40,7 +40,7 @@ class TestCommittmentsService(BaseTestCase):
             self.assertEqual(committment1.amount, committments[0]['amount'])
             self.assertEqual(committment2.amount, committments[1]['amount'])
             self.assertIn('success', data['status'])
-            self.assertEqual(UTILS.YES_FUNDSLIST, data['message'])
+            self.assertEqual(UTILS.SUCCESS(TYPE, ""), data['message'])
 
     def test_add_committment(self):
         """Ensure a new committment can be added to the database."""

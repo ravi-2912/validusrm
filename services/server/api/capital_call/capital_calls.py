@@ -4,15 +4,15 @@ from flask_restful import Resource
 
 from api import db
 from api.capital_call import api
-from api.capital_call.models import Committment
+from api.capital_call.models import CapitalCall
 import api.capital_call.utils as UTILS
 
 
-TYPE = 'Committment'
+TYPE = 'CapitalCall'
 
 
-class CommittmentsPing(Resource):
-    __name__ = 'CommittmentsPing'
+class CapitalcallsPing(Resource):
+    __name__ = 'CapitalcallsPing'
 
     def get(self):
         return UTILS.api_response(
@@ -22,18 +22,18 @@ class CommittmentsPing(Resource):
         )
 
 
-class CommittmentsList(Resource):
-    __name__ = 'CommittmentsList'
+class CapitalcallsList(Resource):
+    __name__ = 'CapitalcallsList'
 
     def get(self):
-        """Get all committments"""
-        committments = Committment.query.all()
+        """Get all capitalcalls"""
+        capitalcalls = CapitalCall.query.all()
         return UTILS.api_response(
-            msg=UTILS.SUCCESS(TYPE, "")
-            if committments
-            else UTILS.SUCCESS(TYPE, ""),
+            msg=(UTILS.YES_FUNDSLIST
+                 if capitalcalls
+                 else UTILS.NO_FUNDSLIST),
             code=200,
-            data={'committments': [c.to_json() for c in committments]}
+            data={'capitalcalls': [c.to_json() for c in capitalcalls]}
         )
 
     def post(self):
@@ -47,11 +47,11 @@ class CommittmentsList(Resource):
         fund_id = post_data.get('fund_id')
         amount = post_data.get('amount')
         try:
-            committment = UTILS.add_committment(fund_id, amount)
+            capitalcall = UTILS.add_capitalcall(fund_id, amount)
             return UTILS.api_response(
-                msg=UTILS.ADDED(TYPE, f'{committment.id} in fund {fund_id}'),
+                msg=UTILS.ADDED(TYPE, f'{capitalcall.id} in fund {fund_id}'),
                 code=201,
-                data=committment.to_json()
+                data=capitalcall.to_json()
                 )
         except exc.IntegrityError as e:
             db.session.rollback()
@@ -62,25 +62,25 @@ class CommittmentsList(Resource):
             )
 
 
-class Committments(Resource):
-    __name__ = 'Committments'
+class Capitalcalls(Resource):
+    __name__ = 'Capitalcalls'
 
-    def get(self, committment_id):
-        """Get single committment details"""
+    def get(self, capitalcall_id):
+        """Get single capitalcall details"""
         try:
-            committment = Committment.query \
-                            .filter_by(id=int(committment_id)) \
+            capitalcall = Capitalcall.query \
+                            .filter_by(id=int(capitalcall_id)) \
                             .first()
-            if not committment:
+            if not capitalcall:
                 return UTILS.api_response(
-                    msg=UTILS.NOT_EXISTS(TYPE, committment_id),
+                    msg=UTILS.NOT_EXISTS(TYPE, capitalcall_id),
                     code=404,
                 )
             else:
                 return UTILS.api_response(
-                    msg=UTILS.SUCCESS(TYPE, committment.id),
+                    msg=UTILS.SUCCESS(TYPE, capitalcall.id),
                     code=200,
-                    data=committment.to_json()
+                    data=capitalcall.to_json()
                 )
         except ValueError as e:
             return UTILS.api_response(
@@ -89,8 +89,8 @@ class Committments(Resource):
                 data=f'{str(e)}'
             )
 
-    def put(self, committment_id):
-        """Update single committment details"""
+    def put(self, capitalcall_id):
+        """Update single capitalcall details"""
         put_data = request.get_json()
         fund_id = put_data.get('fund_id')
         amount = put_data.get("amount")
@@ -101,7 +101,7 @@ class Committments(Resource):
                 code=405
             )
         try:
-            c = Committment.query.get(committment_id)
+            c = Capitalcall.query.get(capitalcall_id)
             if c:
                 if fund_id:
                     if fund_id != c.fund_id:
@@ -112,7 +112,7 @@ class Committments(Resource):
                                 TYPE, f'{c.id} in fund {c.fund_id}'
                             ),
                             code=400,
-                            data=c.query.get(committment_id).to_json()
+                            data=c.query.get(capitalcall_id).to_json()
                         )
                 if amount:
                     if amount != c.amount:
@@ -123,19 +123,19 @@ class Committments(Resource):
                                 TYPE, f'{c.id} in fund {c.fund_id}'
                             ),
                             code=400,
-                            data=Committment.query
-                            .get(committment_id).to_json()
+                            data=Capitalcall.query
+                            .get(capitalcall_id).to_json()
                         )
                 if date:
                     c = UTILS.update(c, 'date', date)
                 return UTILS.api_response(
                     msg=UTILS.UPDATED(TYPE, f'{c.id} in fund {c.fund_id}'),
                     code=202,
-                    data=Committment.query.get(committment_id).to_json()
+                    data=Capitalcall.query.get(capitalcall_id).to_json()
                 )
             else:
                 return UTILS.api_response(
-                    msg=UTILS.NOT_EXISTS(TYPE, committment_id),
+                    msg=UTILS.NOT_EXISTS(TYPE, capitalcall_id),
                     code=405,
                 )
         except exc.IntegrityError as e:
@@ -146,21 +146,21 @@ class Committments(Resource):
                 data=f'{str(e)}'
             )
 
-    def delete(self, committment_id):
-        """Delete single committment details"""
+    def delete(self, capitalcall_id):
+        """Delete single capitalcall details"""
         try:
-            committment = Committment.query \
-                            .filter_by(id=int(committment_id)) \
+            capitalcall = Capitalcall.query \
+                            .filter_by(id=int(capitalcall_id)) \
                             .first()
-            if not committment:
+            if not capitalcall:
                 return UTILS.api_response(
-                    msg=UTILS.NOT_EXISTS(TYPE, committment_id),
+                    msg=UTILS.NOT_EXISTS(TYPE, capitalcall_id),
                     code=404,
                 )
             else:
-                UTILS.delete(committment)
+                UTILS.delete(capitalcall)
                 return UTILS.api_response(
-                    msg=UTILS.DELETED(TYPE, committment.id),
+                    msg=UTILS.DELETED(TYPE, capitalcall.id),
                     code=200
                 )
         except ValueError as e:
@@ -171,6 +171,6 @@ class Committments(Resource):
             )
 
 
-api.add_resource(CommittmentsPing, '/committments/ping')
-api.add_resource(CommittmentsList, '/committments')
-api.add_resource(Committments, '/committments/<committment_id>')
+api.add_resource(CapitalcallsPing, '/capitalcalls/ping')
+api.add_resource(CapitalcallsList, '/capitalcalls')
+api.add_resource(Capitalcalls, '/capitalcalls/<capitalcall_id>')

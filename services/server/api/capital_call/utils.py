@@ -15,6 +15,10 @@ def SUCCESS(type, x):
     return f'{type} {x} found successfully.'
 
 
+def NO_SUCCESS(type, x):
+    return f'{type} {x} not found successfully.'
+
+
 def ADDED(type, x):
     return f'{type} {x} was added.'
 

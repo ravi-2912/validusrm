@@ -29,7 +29,9 @@ class FundsList(Resource):
         """Get all funds"""
         funds = Fund.query.all()
         return UTILS.api_response(
-            msg=UTILS.YES_FUNDSLIST if funds else UTILS.NO_FUNDSLIST,
+            msg=UTILS.SUCCESS(TYPE, "")
+            if funds else
+            UTILS.NO_SUCCESS(TYPE, ""),
             code=200,
             data={'funds': [fund.to_json() for fund in funds]}
         )
