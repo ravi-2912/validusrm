@@ -11,7 +11,7 @@ import api.capital_call.utils as UTILS
 TYPE = 'CapitalCall'
 
 
-class CapitalcallsPing(Resource):
+class CapitalCallsPing(Resource):
     __name__ = 'CapitalcallsPing'
 
     def get(self):
@@ -22,18 +22,18 @@ class CapitalcallsPing(Resource):
         )
 
 
-class CapitalcallsList(Resource):
-    __name__ = 'CapitalcallsList'
+class CapitalCallsList(Resource):
+    __name__ = 'CapitalCallsList'
 
     def get(self):
         """Get all capitalcalls"""
-        capitalcalls = CapitalCall.query.all()
+        calls = CapitalCall.query.all()
         return UTILS.api_response(
-            msg=(UTILS.YES_FUNDSLIST
-                 if capitalcalls
-                 else UTILS.NO_FUNDSLIST),
+            msg=(UTILS.SUCCESS(TYPE, "")
+                 if calls
+                 else UTILS.SUCCESS(TYPE, "")),
             code=200,
-            data={'capitalcalls': [c.to_json() for c in capitalcalls]}
+            data={'capitalcalls': [c.to_json() for c in calls]}
         )
 
     def post(self):
@@ -44,14 +44,26 @@ class CapitalcallsList(Resource):
                 code=400,
                 data=self.__name__
             )
-        fund_id = post_data.get('fund_id')
-        amount = post_data.get('amount')
+        investment_name = post_data.get('investment_name')
+        capital_requirement = post_data.get('capital_requirement')
         try:
-            capitalcall = UTILS.add_capitalcall(fund_id, amount)
-            return UTILS.api_response(
-                msg=UTILS.ADDED(TYPE, f'{capitalcall.id} in fund {fund_id}'),
-                code=201,
-                data=capitalcall.to_json()
+            call = CapitalCall.query \
+                .filter_by(investment_name=investment_name) \
+                .first()
+            if not call:
+                call_i = UTILS.add_capitalcall(
+                    investment_name, capital_requirement
+                )
+                return UTILS.api_response(
+                    msg=UTILS.ADDED(TYPE, investment_name),
+                    code=201,
+                    data=call_i.to_json()
+                )
+            else:
+                return UTILS.api_response(
+                    msg=UTILS.EXISTS(TYPE, investment_name),
+                    code=400,
+                    data=call.to_json()
                 )
         except exc.IntegrityError as e:
             db.session.rollback()
@@ -62,25 +74,25 @@ class CapitalcallsList(Resource):
             )
 
 
-class Capitalcalls(Resource):
-    __name__ = 'Capitalcalls'
+class CapitalCalls(Resource):
+    __name__ = 'CapitalCalls'
 
     def get(self, capitalcall_id):
         """Get single capitalcall details"""
         try:
-            capitalcall = Capitalcall.query \
-                            .filter_by(id=int(capitalcall_id)) \
-                            .first()
-            if not capitalcall:
+            call = CapitalCall.query \
+                    .filter_by(id=int(capitalcall_id)) \
+                    .first()
+            if not call:
                 return UTILS.api_response(
                     msg=UTILS.NOT_EXISTS(TYPE, capitalcall_id),
                     code=404,
                 )
             else:
                 return UTILS.api_response(
-                    msg=UTILS.SUCCESS(TYPE, capitalcall.id),
+                    msg=UTILS.SUCCESS(TYPE, call.id),
                     code=200,
-                    data=capitalcall.to_json()
+                    data=call.to_json()
                 )
         except ValueError as e:
             return UTILS.api_response(
@@ -90,48 +102,38 @@ class Capitalcalls(Resource):
             )
 
     def put(self, capitalcall_id):
-        """Update single capitalcall details"""
         put_data = request.get_json()
-        fund_id = put_data.get('fund_id')
-        amount = put_data.get("amount")
-        date = put_data.get("date")
         if not put_data:
             return UTILS.api_response(
                 msg=UTILS.INVALID_PAYLD,
                 code=405
             )
+        investment_name = put_data.get('investment_name')
+        capital_requirement = put_data.get('capital_requirement')
         try:
-            c = Capitalcall.query.get(capitalcall_id)
-            if c:
-                if fund_id:
-                    if fund_id != c.fund_id:
-                        c = UTILS.update(c, 'fund_id', int(fund_id))
-                    else:
-                        return UTILS.api_response(
-                            msg=UTILS.NO_CHANGE(
-                                TYPE, f'{c.id} in fund {c.fund_id}'
-                            ),
-                            code=400,
-                            data=c.query.get(capitalcall_id).to_json()
-                        )
-                if amount:
-                    if amount != c.amount:
-                        c = UTILS.update(c, 'amount', float(amount))
-                    else:
-                        return UTILS.api_response(
-                            msg=UTILS.NO_CHANGE(
-                                TYPE, f'{c.id} in fund {c.fund_id}'
-                            ),
-                            code=400,
-                            data=Capitalcall.query
-                            .get(capitalcall_id).to_json()
-                        )
-                if date:
-                    c = UTILS.update(c, 'date', date)
+            call = CapitalCall.query.get(capitalcall_id)
+            existingCalls = CapitalCall.query \
+                .filter_by(investment_name=investment_name) \
+                .first()
+            if existingCalls:
                 return UTILS.api_response(
-                    msg=UTILS.UPDATED(TYPE, f'{c.id} in fund {c.fund_id}'),
+                    msg=UTILS.NO_CHANGE(TYPE, investment_name),
+                    code=405,
+                    data=existingCalls.to_json()
+                )
+            if call:
+                if investment_name:
+                    call = UTILS.update(
+                        call, 'investment_name', investment_name
+                    )
+                if capital_requirement:
+                    call = UTILS.update(
+                        call, 'capital_requirement', capital_requirement
+                    )
+                return UTILS.api_response(
+                    msg=UTILS.UPDATED(TYPE, investment_name),
                     code=202,
-                    data=Capitalcall.query.get(capitalcall_id).to_json()
+                    data=CapitalCall.query.get(capitalcall_id).to_json()
                 )
             else:
                 return UTILS.api_response(
@@ -149,7 +151,7 @@ class Capitalcalls(Resource):
     def delete(self, capitalcall_id):
         """Delete single capitalcall details"""
         try:
-            capitalcall = Capitalcall.query \
+            capitalcall = CapitalCall.query \
                             .filter_by(id=int(capitalcall_id)) \
                             .first()
             if not capitalcall:
@@ -171,6 +173,6 @@ class Capitalcalls(Resource):
             )
 
 
-api.add_resource(CapitalcallsPing, '/capitalcalls/ping')
-api.add_resource(CapitalcallsList, '/capitalcalls')
-api.add_resource(Capitalcalls, '/capitalcalls/<capitalcall_id>')
+api.add_resource(CapitalCallsPing, '/capitalcalls/ping')
+api.add_resource(CapitalCallsList, '/capitalcalls')
+api.add_resource(CapitalCalls, '/capitalcalls/<capitalcall_id>')
