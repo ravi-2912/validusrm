@@ -1,5 +1,6 @@
 from api.capital_call.funds import Fund
 from api.capital_call.committments import Committment
+from api.capital_call.capital_calls import CapitalCall
 from api import db
 
 
@@ -64,6 +65,13 @@ def add_committment(fund_id, amount, date=None):
     db.session.add(committment)
     db.session.commit()
     return committment
+
+
+def add_capitalcall(investment_name, capital_requirement, date=None):
+    call = CapitalCall(investment_name, capital_requirement, date)
+    db.session.add(call)
+    db.session.commit()
+    return call
 
 
 def delete(obj):
