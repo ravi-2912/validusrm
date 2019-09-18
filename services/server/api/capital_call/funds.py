@@ -96,12 +96,12 @@ class Funds(Resource):
 
     def put(self, fund_id):
         put_data = request.get_json()
-        fundname = put_data.get('fundname')
         if not put_data:
             return UTILS.api_response(
                 msg=UTILS.INVALID_PAYLD,
                 code=405
             )
+        fundname = put_data.get('fundname')
         try:
             fund = Fund.query.get(fund_id)
             existingFunds = Fund.query.filter_by(fundname=fundname).first()
