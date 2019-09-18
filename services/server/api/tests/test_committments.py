@@ -164,6 +164,71 @@ class TestCommittmentsService(BaseTestCase):
             self.assertEqual(committment.id, data["data"]["id"])
             self.assertEqual(4000, data["data"]["amount"])
 
+    def test_update_committment_incorrect_id(self):
+        """
+        Ensure error is thrown if the id is incorrect for updating committment.
+        """
+        UTILS.add_committment(self.fund_1.id, 1000)
+        with self.client as client:
+            response = client.put(
+                '/committments/999',
+                data=json.dumps({
+                    'fund_id': '1',
+                }),
+                content_type='application/json',
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 405)
+            self.assertIn(UTILS.NOT_EXISTS(TYPE, '999'),
+                          data['message'])
+            self.assertIn('fail', data['status'])
+            self.assertFalse(data['data'])
+
+    def test_update_committment_no_id(self):
+        """Ensure error is thrown if an id is not provided."""
+        UTILS.add_committment(self.fund_1.id, 1000)
+        with self.client as client:
+            response = client.put(
+                '/committments/blah',
+                data=json.dumps({
+                    'fund_id': 1
+                }),
+                content_type='application/json',
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 405)
+            self.assertIn(UTILS.NOT_EXISTS(TYPE, 'blah'),
+                          data['message'])
+            self.assertIn('fail', data['status'])
+            self.assertFalse(data['data'])
+
+    def test_update_committment_no_change(self):
+        """
+        Ensure correct response recieved for no change to updated committment
+        """
+        committment = UTILS.add_committment(self.fund_1.id, 1000)
+        with self.client as client:
+            response = client.put(
+                f'/committments/{committment.id}',
+                data=json.dumps({
+                    'amount': 1000,
+                }),
+                content_type='application/json',
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+            self.assertIn(UTILS.NO_CHANGE(TYPE, f'{committment.id} in fund {committment.fund_id}'), data['message'])
+
+    def test_delete_committment(self):
+        """Ensure committment is deleted"""
+        committment = UTILS.add_committment(self.fund_1.id, 1000)
+        with self.client as client:
+            res = client.delete(f'/committments/{committment.id}')
+            data = json.loads(res.data.decode())
+            self.assertEqual(res.status_code, 200)
+            self.assertIn('success', data['status'])
+            self.assertIn(UTILS.DELETED(TYPE, committment.id),
+                          data['message'])
 
 if __name__ == '__main__':
     unittest.main()
