@@ -92,14 +92,14 @@ class Committments(Resource):
     def put(self, committment_id):
         """Update single committment details"""
         put_data = request.get_json()
-        fund_id = put_data.get('fund_id')
-        amount = put_data.get("amount")
-        date = put_data.get("date")
         if not put_data:
             return UTILS.api_response(
                 msg=UTILS.INVALID_PAYLD,
                 code=405
             )
+        fund_id = put_data.get('fund_id')
+        amount = put_data.get("amount")
+        date = put_data.get("date")
         try:
             c = Committment.query.get(committment_id)
             if c:
