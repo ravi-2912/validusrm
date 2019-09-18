@@ -217,7 +217,13 @@ class TestCommittmentsService(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
-            self.assertIn(UTILS.NO_CHANGE(TYPE, f'{committment.id} in fund {committment.fund_id}'), data['message'])
+            self.assertIn(
+                UTILS.NO_CHANGE(
+                    TYPE,
+                    f'{committment.id} in fund {committment.fund_id}'
+                ),
+                data['message']
+            )
 
     def test_delete_committment(self):
         """Ensure committment is deleted"""
@@ -229,6 +235,7 @@ class TestCommittmentsService(BaseTestCase):
             self.assertIn('success', data['status'])
             self.assertIn(UTILS.DELETED(TYPE, committment.id),
                           data['message'])
+
 
 if __name__ == '__main__':
     unittest.main()
