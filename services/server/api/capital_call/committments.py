@@ -104,9 +104,23 @@ class Committments(Resource):
             committment = Committment.query.get(committment_id)
             if committment:
                 if fund_id:
-                    committment = UTILS.update(committment, 'fund_id', fund_id)
+                    if fund_id != committment.fund_id:
+                        committment = UTILS.update(committment, 'fund_id', int(fund_id))
+                    else:
+                        return UTILS.api_response(
+                            msg=UTILS.NO_CHANGE(TYPE, f'{committment.id} in fund {committment.fund_id}'),
+                            code=400,
+                            data=Committment.query.get(committment_id).to_json()
+                        )
                 if amount:
-                    committment = UTILS.update(committment, 'amount', amount)
+                    if amount != committment.amount:
+                        committment = UTILS.update(committment, 'amount', float(amount))
+                    else:
+                        return UTILS.api_response(
+                            msg=UTILS.NO_CHANGE(TYPE, f'{committment.id} in fund {committment.fund_id}'),
+                            code=400,
+                            data=Committment.query.get(committment_id).to_json()
+                        )
                 if date:
                     committment = UTILS.update(committment, 'date', date)
                 return UTILS.api_response(
