@@ -35,6 +35,10 @@ def UPDATED(type, x):
     return f'{type} {x} was updated.'
 
 
+def NO_CHANGE(type, x):
+    return f'{type} {x} no change.'
+
+
 def api_response(msg, code, data=None):
     first_char = int(str(code)[0])
     return {
