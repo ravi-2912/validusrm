@@ -1,7 +1,7 @@
 from api.capital_call.funds import Fund
 from api.capital_call.committments import Committment
 from api.capital_call.capital_calls import CapitalCall
-from api.capital_call.fundinvestments import Investment
+from api.capital_call.investments import Investment
 from api import db
 
 
