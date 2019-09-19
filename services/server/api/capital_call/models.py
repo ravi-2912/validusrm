@@ -21,7 +21,7 @@ class Fund(db.Model):
     __tablename__ = 'fund'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    fundname = db.Column(db.String(128), nullable=False, unique=True)
+    name = db.Column(db.String(128), nullable=False, unique=True)
     date = db.Column(db.DateTime, default=datetime.now(), nullable=False)
 
     # Establish One-to-Many relationship
@@ -32,19 +32,19 @@ class Fund(db.Model):
     )
 
     # Establish Many-to-Many relationship
-    fundinvestments = db.relationship(
-        'FundInvestment',
+    investments = db.relationship(
+        'Investment',
         secondary=FundInvestments,
         backref=db.backref('fund', lazy='dynamic')
     )
 
-    def __init__(self, fundname):
-        self.fundname = fundname
+    def __init__(self, name):
+        self.name = name
 
     def to_json(self):
         return {
             'id': self.id,
-            'fundname': self.fundname,
+            'name': self.name,
             'date': self.date.strftime('%Y-%m-%d T%H:%M:%S.%f'),
             'committments': [c.to_json() for c in self.committments],
         }
@@ -66,8 +66,8 @@ class Committment(db.Model):
     date = db.Column(db.DateTime, default=datetime.now(), nullable=False)
 
     # Establish Many-to-Many relationship
-    fundinvestments = db.relationship(
-        'FundInvestment',
+    investments = db.relationship(
+        'Investment',
         secondary=FundInvestments,
         backref=db.backref('committment', lazy='dynamic')
     )
@@ -84,7 +84,7 @@ class Committment(db.Model):
             'fund_id': self.fund_id,
             'amount': self.amount,
             'date': self.date.strftime('%Y-%m-%d T%H:%M:%S.%f'),
-            'fundinvestments': [fi for fi in self.fundinvestments]
+            'investments': [i.to_json() for i in self.investments]
         }
 
 
@@ -92,42 +92,42 @@ class CapitalCall(db.Model):
     __tablename__ = 'capitalcall'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     date = db.Column(db.DateTime, default=datetime.now(), nullable=False)
-    investment_name = db.Column(db.String(255), nullable=False, unique=True)
-    capital_requirement = db.Column(db.Float, nullable=False)
+    name = db.Column(db.String(255), nullable=False, unique=True)
+    capital = db.Column(db.Float, nullable=False)
 
     # Establish Many-to-Many relationship
-    fundinvestments = db.relationship(
-        'FundInvestment',
+    investments = db.relationship(
+        'Investment',
         secondary=FundInvestments,
         backref=db.backref('capitalcall', lazy='dynamic')
     )
 
-    def __init__(self, investment_name, capital_requirement, date=None):
-        self.investment_name = investment_name
-        self.capital_requirement = capital_requirement
+    def __init__(self, name, capital, date=None):
+        self.name = name
+        self.capital = capital
         if date is not None:
             self.date = date
 
     def to_json(self):
         return {
             'id': self.id,
-            'investment_name': self.investment_name,
-            'capital_requirement': self.capital_requirement,
+            'name': self.name,
+            'capital': self.capital,
             'date': self.date.strftime('%Y-%m-%d T%H:%M:%S.%f'),
-            'fundinvestments': self.fundinvestments
+            'investments': [i.to_json() for i in self.investments]
         }
 
 
-class FundInvestment(db.Model):
+class Investment(db.Model):
     __tablename__ = 'fundinvestment'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    investment_amount = db.Column(db.Float, nullable=False)
+    investment = db.Column(db.Float, nullable=False)
 
-    def __init__(self, investment_amount):
-        self.investment_amount = investment_amount
+    def __init__(self, investment):
+        self.investment = investment
 
     def to_json(self):
         return {
             'id': self.id,
-            'investment_amount': self.investment_amount
+            'investment': self.investment
         }
