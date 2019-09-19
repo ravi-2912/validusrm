@@ -149,7 +149,7 @@ class Funds(Resource):
         except ValueError as e:
             return UTILS.api_response(
                 msg=f'{UTILS.VALUE_ERR} {self.__name__}',
-                code=400,
+                code=404,
                 data=f'{str(e)}'
             )
 
