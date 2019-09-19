@@ -28,10 +28,10 @@ class TestCapitalCallsService(BaseTestCase):
             calls = data['data']['capitalcalls']
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(calls), 2)
-            self.assertEqual(call1.investment_name, calls[0]['investment_name'])
-            self.assertEqual(call2.investment_name, calls[1]['investment_name'])
-            self.assertEqual([], calls[0]['fundinvestments'])
-            self.assertEqual([], calls[1]['fundinvestments'])
+            self.assertEqual(call1.name, calls[0]['name'])
+            self.assertEqual(call2.name, calls[1]['name'])
+            self.assertEqual([], calls[0]['investments'])
+            self.assertEqual([], calls[1]['investments'])
             self.assertIn('success', data['status'])
 
     def test_add_capitalcall(self):
@@ -40,8 +40,8 @@ class TestCapitalCallsService(BaseTestCase):
             response = client.post(
                 '/capitalcalls',
                 data=json.dumps({
-                    'investment_name': 'investment_1',
-                    'capital_requirement': 2000
+                    'name': 'investment_1',
+                    'capital': 2000
                 }),
                 content_type='application/json'
             )
@@ -84,16 +84,16 @@ class TestCapitalCallsService(BaseTestCase):
             client.post(
                 '/capitalcalls',
                 data=json.dumps({
-                    'investment_name': 'investment_1',
-                    'capital_requirement': 1000
+                    'name': 'investment_1',
+                    'capital': 1000
                 }),
                 content_type='application/json',
             )
             response = client.post(
                 '/capitalcalls',
                 data=json.dumps({
-                    'investment_name': 'investment_1',
-                    'capital_requirement': 2000
+                    'name': 'investment_1',
+                    'capital': 2000
                 }),
                 content_type='application/json',
             )
@@ -111,7 +111,7 @@ class TestCapitalCallsService(BaseTestCase):
             response = client.get(f'/capitalcalls/{capitalcall.id}')
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
-            self.assertIn('investment_1', data['data']['investment_name'])
+            self.assertIn('investment_1', data['data']['name'])
             self.assertIn('success', data['status'])
 
     def test_single_capitalcall_no_id(self):
@@ -140,16 +140,16 @@ class TestCapitalCallsService(BaseTestCase):
             response = client.put(
                 f'/capitalcalls/{capitalcall.id}',
                 data=json.dumps({
-                    'investment_name': 'investment_1'
+                    'name': 'investment_1'
                 }),
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 202)
+            self.assertEqual(response.status_code, 200)
             self.assertIn(UTILS.UPDATED(TYPE, 'investment_1'), data['message'])
             self.assertIn('success', data['status'])
             self.assertEqual(capitalcall.id, data["data"]["id"])
-            self.assertEqual('investment_1', data["data"]["investment_name"])
+            self.assertEqual('investment_1', data["data"]["name"])
 
     def test_update_capitalcall_invalid_json(self):
         """Ensure error is thrown if the JSON object is empty."""
@@ -161,7 +161,7 @@ class TestCapitalCallsService(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 405)
+            self.assertEqual(response.status_code, 400)
             self.assertIn(UTILS.INVALID_PAYLD, data['message'])
             self.assertIn('fail', data['status'])
             self.assertFalse(data['data'])
@@ -174,12 +174,12 @@ class TestCapitalCallsService(BaseTestCase):
             response = client.put(
                 f'/capitalcalls/{capitalcall_2.id}',
                 data=json.dumps({
-                    'investment_name': 'investment_1'
+                    'name': 'investment_1'
                 }),
                 content_type='application/json',
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 405)
+            self.assertEqual(response.status_code, 400)
             self.assertIn(
                 UTILS.NO_CHANGE(TYPE, 'investment_1'), data['message']
             )
@@ -195,12 +195,12 @@ class TestCapitalCallsService(BaseTestCase):
             response = client.put(
                 '/capitalcalls/999',
                 data=json.dumps({
-                    'investment_name': 'investment_2'
+                    'name': 'investment_2'
                 }),
                 content_type='application/json',
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 405)
+            self.assertEqual(response.status_code, 404)
             self.assertIn(UTILS.NOT_EXISTS(TYPE, '999'),
                           data['message'])
             self.assertIn('fail', data['status'])
@@ -213,12 +213,12 @@ class TestCapitalCallsService(BaseTestCase):
             response = client.put(
                 '/capitalcalls/blah',
                 data=json.dumps({
-                    'investment_name': 'investment_2'
+                    'name': 'investment_2'
                 }),
                 content_type='application/json',
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 405)
+            self.assertEqual(response.status_code, 404)
             self.assertIn(UTILS.NOT_EXISTS(TYPE, 'blah'),
                           data['message'])
             self.assertIn('fail', data['status'])
@@ -233,12 +233,12 @@ class TestCapitalCallsService(BaseTestCase):
             response = client.put(
                 f'/capitalcalls/{capitalcall.id}',
                 data=json.dumps({
-                    'investment_name': 'investment_1'
+                    'capital': 1000
                 }),
                 content_type='application/json',
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 405)
+            self.assertEqual(response.status_code, 400)
             self.assertIn(
                 UTILS.NO_CHANGE(TYPE, 'investment_1'), data['message']
             )

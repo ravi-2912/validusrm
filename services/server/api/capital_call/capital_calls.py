@@ -32,7 +32,7 @@ class CapitalCallsList(Resource):
             msg=(UTILS.SUCCESS(TYPE, "")
                  if calls
                  else UTILS.SUCCESS(TYPE, "")),
-            code=200,
+            code=200 if calls else 404,
             data={'capitalcalls': [c.to_json() for c in calls]}
         )
 
@@ -44,24 +44,24 @@ class CapitalCallsList(Resource):
                 code=400,
                 data=self.__name__
             )
-        investment_name = post_data.get('investment_name')
-        capital_requirement = post_data.get('capital_requirement')
+        name = post_data.get('name')
+        capital = post_data.get('capital')
         try:
             call = CapitalCall.query \
-                .filter_by(investment_name=investment_name) \
+                .filter_by(name=name) \
                 .first()
             if not call:
                 call_i = UTILS.add_capitalcall(
-                    investment_name, capital_requirement
+                    name, capital
                 )
                 return UTILS.api_response(
-                    msg=UTILS.ADDED(TYPE, investment_name),
+                    msg=UTILS.ADDED(TYPE, name),
                     code=201,
                     data=call_i.to_json()
                 )
             else:
                 return UTILS.api_response(
-                    msg=UTILS.EXISTS(TYPE, investment_name),
+                    msg=UTILS.EXISTS(TYPE, name),
                     code=400,
                     data=call.to_json()
                 )
@@ -81,8 +81,7 @@ class CapitalCalls(Resource):
         """Get single capitalcall details"""
         try:
             call = CapitalCall.query \
-                    .filter_by(id=int(capitalcall_id)) \
-                    .first()
+                .filter_by(id=int(capitalcall_id)).first()
             if not call:
                 return UTILS.api_response(
                     msg=UTILS.NOT_EXISTS(TYPE, capitalcall_id),
@@ -106,45 +105,46 @@ class CapitalCalls(Resource):
         if not put_data:
             return UTILS.api_response(
                 msg=UTILS.INVALID_PAYLD,
-                code=405
+                code=400
             )
-        investment_name = put_data.get('investment_name')
-        capital_requirement = put_data.get('capital_requirement')
+        name = put_data.get('name')
+        capital = put_data.get('capital')
         try:
             call = CapitalCall.query.get(capitalcall_id)
             existingCalls = CapitalCall.query \
-                .filter_by(investment_name=investment_name) \
-                .first()
+                .filter_by(name=name).first()
             if existingCalls:
                 return UTILS.api_response(
-                    msg=UTILS.NO_CHANGE(TYPE, investment_name),
-                    code=405,
+                    msg=UTILS.EXISTS(TYPE, name),
+                    code=400,
                     data=existingCalls.to_json()
                 )
             if call:
-                if investment_name:
-                    call = UTILS.update(
-                        call, 'investment_name', investment_name
+                if (capital and (capital == call.capital)):
+                    return UTILS.api_response(
+                        msg=UTILS.NO_CHANGE(TYPE, f'{call.name}'),
+                        code=400,
+                        data=call.to_json()
                     )
-                if capital_requirement:
-                    call = UTILS.update(
-                        call, 'capital_requirement', capital_requirement
-                    )
+                if name:
+                    call = UTILS.update(call, 'name', name)
+                if capital:
+                    call = UTILS.update(call, 'capital', capital)
                 return UTILS.api_response(
-                    msg=UTILS.UPDATED(TYPE, investment_name),
-                    code=202,
+                    msg=UTILS.UPDATED(TYPE, name),
+                    code=200,
                     data=CapitalCall.query.get(capitalcall_id).to_json()
                 )
             else:
                 return UTILS.api_response(
                     msg=UTILS.NOT_EXISTS(TYPE, capitalcall_id),
-                    code=405,
+                    code=404,
                 )
         except exc.IntegrityError as e:
             db.session.rollback()
             return UTILS.api_response(
                 msg=f'{UTILS.INTEGRITY_ERR} {self.__name__}',
-                code=405,
+                code=400,
                 data=f'{str(e)}'
             )
 
@@ -152,8 +152,7 @@ class CapitalCalls(Resource):
         """Delete single capitalcall details"""
         try:
             capitalcall = CapitalCall.query \
-                            .filter_by(id=int(capitalcall_id)) \
-                            .first()
+                .filter_by(id=int(capitalcall_id)).first()
             if not capitalcall:
                 return UTILS.api_response(
                     msg=UTILS.NOT_EXISTS(TYPE, capitalcall_id),
