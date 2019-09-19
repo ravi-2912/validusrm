@@ -181,7 +181,7 @@ class TestCapitalCallsService(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
             self.assertIn(
-                UTILS.NO_CHANGE(TYPE, 'investment_1'), data['message']
+                UTILS.EXISTS(TYPE, 'investment_1'), data['message']
             )
             self.assertIn('fail', data['status'])
             self.assertEqual(capitalcall_1.id, data["data"]["id"])
