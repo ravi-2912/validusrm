@@ -44,19 +44,19 @@ class FundsList(Resource):
                 code=400,
                 data=self.__name__
             )
-        fundname = post_data.get('fundname')
+        name = post_data.get('name')
         try:
-            fund = Fund.query.filter_by(fundname=fundname).first()
+            fund = Fund.query.filter_by(name=name).first()
             if not fund:
-                fund = UTILS.add_fund(fundname)
+                fund = UTILS.add_fund(name)
                 return UTILS.api_response(
-                    msg=UTILS.ADDED(TYPE, fundname),
+                    msg=UTILS.ADDED(TYPE, name),
                     code=201,
                     data=fund.to_json()
                 )
             else:
                 return UTILS.api_response(
-                    msg=UTILS.EXISTS(TYPE, fundname),
+                    msg=UTILS.EXISTS(TYPE, name),
                     code=400,
                     data=fund.to_json()
                 )
@@ -101,20 +101,20 @@ class Funds(Resource):
                 msg=UTILS.INVALID_PAYLD,
                 code=400
             )
-        fundname = put_data.get('fundname')
+        name = put_data.get('name')
         try:
             fund = Fund.query.get(fund_id)
-            existingFunds = Fund.query.filter_by(fundname=fundname).first()
+            existingFunds = Fund.query.filter_by(name=name).first()
             if existingFunds:
                 return UTILS.api_response(
-                    msg=UTILS.EXISTS(TYPE, fundname),
+                    msg=UTILS.EXISTS(TYPE, name),
                     code=400,
                     data=existingFunds.to_json()
                 )
             if fund:
-                fund = UTILS.update(fund, 'fundname', fundname)
+                fund = UTILS.update(fund, 'fundname', name)
                 return UTILS.api_response(
-                    msg=UTILS.UPDATED(TYPE, fundname),
+                    msg=UTILS.UPDATED(TYPE, name),
                     code=200,
                     data=fund.to_json()
                 )

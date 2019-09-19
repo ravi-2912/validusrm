@@ -28,8 +28,8 @@ class TestFundsService(BaseTestCase):
             funds = data['data']['funds']
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(funds), 2)
-            self.assertEqual(fund1.fundname, funds[0]['fundname'])
-            self.assertEqual(fund2.fundname, funds[1]['fundname'])
+            self.assertEqual(fund1.name, funds[0]['name'])
+            self.assertEqual(fund2.name, funds[1]['name'])
             self.assertEqual([], funds[0]['committments'])
             self.assertEqual([], funds[1]['committments'])
             self.assertIn('success', data['status'])
@@ -40,7 +40,7 @@ class TestFundsService(BaseTestCase):
             response = client.post(
                 '/funds',
                 data=json.dumps({
-                    'fundname': 'fund_1',
+                    'name': 'fund_1',
                 }),
                 content_type='application/json'
             )
@@ -64,7 +64,7 @@ class TestFundsService(BaseTestCase):
 
     def test_add_fund_invalid_json_keys(self):
         """
-        Ensure error is thrown if the JSON object does not have a fundname key.
+        Ensure error is thrown if the JSON object does not have a name key.
         """
         with self.client as client:
             response = client.post(
@@ -83,14 +83,14 @@ class TestFundsService(BaseTestCase):
             client.post(
                 '/funds',
                 data=json.dumps({
-                    'fundname': 'fund_1',
+                    'name': 'fund_1',
                 }),
                 content_type='application/json',
             )
             response = client.post(
                 '/funds',
                 data=json.dumps({
-                    'fundname': 'fund_1',
+                    'name': 'fund_1',
                 }),
                 content_type='application/json',
             )
@@ -106,7 +106,7 @@ class TestFundsService(BaseTestCase):
             response = client.get(f'/funds/{fund.id}')
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
-            self.assertIn('fund_1', data['data']['fundname'])
+            self.assertIn('fund_1', data['data']['name'])
             self.assertIn('success', data['status'])
 
     def test_single_fund_no_id(self):
@@ -135,7 +135,7 @@ class TestFundsService(BaseTestCase):
             response = client.put(
                 f'/funds/{fund.id}',
                 data=json.dumps({
-                    'fundname': 'fund_1',
+                    'name': 'fund_1',
                 }),
                 content_type='application/json'
             )
@@ -144,7 +144,7 @@ class TestFundsService(BaseTestCase):
             self.assertIn(UTILS.UPDATED(TYPE, 'fund_1'), data['message'])
             self.assertIn('success', data['status'])
             self.assertEqual(fund.id, data["data"]["id"])
-            self.assertEqual('fund_1', data["data"]["fundname"])
+            self.assertEqual('fund1', data["data"]["name"])
 
     def test_update_fund_invalid_json(self):
         """Ensure error is thrown if the JSON object is empty."""
@@ -169,7 +169,7 @@ class TestFundsService(BaseTestCase):
             response = client.put(
                 f'/funds/{fund_2.id}',
                 data=json.dumps({
-                    'fundname': 'fund_1',
+                    'name': 'fund_1',
                 }),
                 content_type='application/json',
             )
@@ -186,7 +186,7 @@ class TestFundsService(BaseTestCase):
             response = client.put(
                 '/funds/999',
                 data=json.dumps({
-                    'fundname': 'fund_1',
+                    'name': 'fund_1',
                 }),
                 content_type='application/json',
             )
@@ -204,7 +204,7 @@ class TestFundsService(BaseTestCase):
             response = client.put(
                 '/funds/blah',
                 data=json.dumps({
-                    'fundname': 'fund_1',
+                    'name': 'fund_1',
                 }),
                 content_type='application/json',
             )
@@ -222,7 +222,7 @@ class TestFundsService(BaseTestCase):
             response = client.put(
                 f'/funds/{fund.id}',
                 data=json.dumps({
-                    'fundname': 'fund_1',
+                    'name': 'fund_1',
                 }),
                 content_type='application/json',
             )
