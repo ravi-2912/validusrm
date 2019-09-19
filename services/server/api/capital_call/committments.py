@@ -32,7 +32,7 @@ class CommittmentsList(Resource):
             msg=UTILS.SUCCESS(TYPE, "")
             if committments
             else UTILS.SUCCESS(TYPE, ""),
-            code=200,
+            code=200 if committments else 404,
             data={'committments': [c.to_json() for c in committments]}
         )
 
@@ -69,8 +69,7 @@ class Committments(Resource):
         """Get single committment details"""
         try:
             committment = Committment.query \
-                            .filter_by(id=int(committment_id)) \
-                            .first()
+                .filter_by(id=int(committment_id)).first()
             if not committment:
                 return UTILS.api_response(
                     msg=UTILS.NOT_EXISTS(TYPE, committment_id),
@@ -95,54 +94,41 @@ class Committments(Resource):
         if not put_data:
             return UTILS.api_response(
                 msg=UTILS.INVALID_PAYLD,
-                code=405
+                code=400
             )
         fund_id = put_data.get('fund_id')
         amount = put_data.get("amount")
-        date = put_data.get("date")
         try:
             c = Committment.query.get(committment_id)
             if c:
+                if (fund_id and (fund_id == c.fund_id)) or \
+                   (amount and (amount == c.amount)):
+                    return UTILS.api_response(
+                        msg=UTILS.NO_CHANGE(
+                            TYPE, f'{c.id} in fund {c.fund_id}'
+                        ),
+                        code=400,
+                        data=c.query.get(committment_id).to_json()
+                    )
                 if fund_id:
-                    if fund_id != c.fund_id:
-                        c = UTILS.update(c, 'fund_id', int(fund_id))
-                    else:
-                        return UTILS.api_response(
-                            msg=UTILS.NO_CHANGE(
-                                TYPE, f'{c.id} in fund {c.fund_id}'
-                            ),
-                            code=400,
-                            data=c.query.get(committment_id).to_json()
-                        )
+                    c = UTILS.update(c, 'fund_id', int(fund_id))
                 if amount:
-                    if amount != c.amount:
-                        c = UTILS.update(c, 'amount', float(amount))
-                    else:
-                        return UTILS.api_response(
-                            msg=UTILS.NO_CHANGE(
-                                TYPE, f'{c.id} in fund {c.fund_id}'
-                            ),
-                            code=400,
-                            data=Committment.query
-                            .get(committment_id).to_json()
-                        )
-                if date:
-                    c = UTILS.update(c, 'date', date)
+                    c = UTILS.update(c, 'amount', int(amount))
                 return UTILS.api_response(
                     msg=UTILS.UPDATED(TYPE, f'{c.id} in fund {c.fund_id}'),
-                    code=202,
-                    data=Committment.query.get(committment_id).to_json()
+                    code=200,
+                    data=c.to_json()
                 )
             else:
                 return UTILS.api_response(
                     msg=UTILS.NOT_EXISTS(TYPE, committment_id),
-                    code=405,
+                    code=404,
                 )
         except exc.IntegrityError as e:
             db.session.rollback()
             return UTILS.api_response(
                 msg=f'{UTILS.INTEGRITY_ERR} {self.__name__}',
-                code=405,
+                code=400,
                 data=f'{str(e)}'
             )
 
@@ -150,8 +136,7 @@ class Committments(Resource):
         """Delete single committment details"""
         try:
             committment = Committment.query \
-                            .filter_by(id=int(committment_id)) \
-                            .first()
+                .filter_by(id=int(committment_id)).first()
             if not committment:
                 return UTILS.api_response(
                     msg=UTILS.NOT_EXISTS(TYPE, committment_id),

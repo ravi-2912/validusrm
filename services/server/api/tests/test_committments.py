@@ -156,7 +156,7 @@ class TestCommittmentsService(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 202)
+            self.assertEqual(response.status_code, 200)
             self.assertIn(UTILS.UPDATED(TYPE,
                           f'{committment.id} in fund {self.fund_2.id}'),
                           data['message'])
@@ -178,7 +178,7 @@ class TestCommittmentsService(BaseTestCase):
                 content_type='application/json',
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 405)
+            self.assertEqual(response.status_code, 404)
             self.assertIn(UTILS.NOT_EXISTS(TYPE, '999'),
                           data['message'])
             self.assertIn('fail', data['status'])
@@ -196,7 +196,7 @@ class TestCommittmentsService(BaseTestCase):
                 content_type='application/json',
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 405)
+            self.assertEqual(response.status_code, 404)
             self.assertIn(UTILS.NOT_EXISTS(TYPE, 'blah'),
                           data['message'])
             self.assertIn('fail', data['status'])
