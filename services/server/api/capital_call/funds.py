@@ -32,7 +32,7 @@ class FundsList(Resource):
             msg=UTILS.SUCCESS(TYPE, "")
             if funds else
             UTILS.NO_SUCCESS(TYPE, ""),
-            code=200,
+            code=200 if funds else 404,
             data={'funds': [fund.to_json() for fund in funds]}
         )
 
@@ -99,7 +99,7 @@ class Funds(Resource):
         if not put_data:
             return UTILS.api_response(
                 msg=UTILS.INVALID_PAYLD,
-                code=405
+                code=400
             )
         fundname = put_data.get('fundname')
         try:
@@ -107,27 +107,27 @@ class Funds(Resource):
             existingFunds = Fund.query.filter_by(fundname=fundname).first()
             if existingFunds:
                 return UTILS.api_response(
-                    msg=UTILS.NO_CHANGE(TYPE, fundname),
-                    code=405,
+                    msg=UTILS.EXISTS(TYPE, fundname),
+                    code=400,
                     data=existingFunds.to_json()
                 )
             if fund:
                 fund = UTILS.update(fund, 'fundname', fundname)
                 return UTILS.api_response(
                     msg=UTILS.UPDATED(TYPE, fundname),
-                    code=202,
-                    data=Fund.query.get(fund_id).to_json()
+                    code=200,
+                    data=fund.to_json()
                 )
             else:
                 return UTILS.api_response(
                     msg=UTILS.NOT_EXISTS(TYPE, fund_id),
-                    code=405,
+                    code=404,
                 )
         except exc.IntegrityError as e:
             db.session.rollback()
             return UTILS.api_response(
                 msg=f'{UTILS.INTEGRITY_ERR} {self.__name__}',
-                code=405,
+                code=400,
                 data=f'{str(e)}'
             )
 
@@ -149,7 +149,7 @@ class Funds(Resource):
         except ValueError as e:
             return UTILS.api_response(
                 msg=f'{UTILS.VALUE_ERR} {self.__name__}',
-                code=404,
+                code=400,
                 data=f'{str(e)}'
             )
 
