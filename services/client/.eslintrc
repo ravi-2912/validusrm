@@ -5,7 +5,7 @@
         "allowImportExportEverywhere": false,
         "codeFrame": false
     },
-    "extends": ["airbnb", "react-app", "plugin:prettier/recommended"],
+    "extends": ["react-app", "plugin:prettier/recommended"],
     "env": {
         "browser": true,
         "jest": true
