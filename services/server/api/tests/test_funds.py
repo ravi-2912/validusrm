@@ -144,7 +144,7 @@ class TestFundsService(BaseTestCase):
             self.assertIn(UTILS.UPDATED(TYPE, 'fund_1'), data['message'])
             self.assertIn('success', data['status'])
             self.assertEqual(fund.id, data["data"]["id"])
-            self.assertEqual('fund1', data["data"]["name"])
+            self.assertEqual('fund_1', data["data"]["name"])
 
     def test_update_fund_invalid_json(self):
         """Ensure error is thrown if the JSON object is empty."""

@@ -112,7 +112,7 @@ class Funds(Resource):
                     data=existingFunds.to_json()
                 )
             if fund:
-                fund = UTILS.update(fund, 'fundname', name)
+                fund = UTILS.update(fund, 'name', name)
                 return UTILS.api_response(
                     msg=UTILS.UPDATED(TYPE, name),
                     code=200,
