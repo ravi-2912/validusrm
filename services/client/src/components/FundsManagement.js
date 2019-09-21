@@ -104,7 +104,7 @@ class FundsManagement extends React.Component {
               <CommittmentsDataGrid />
             ) : (
               <FundsDataGrid
-                rows={this.state.funds}
+                rows={this.state.rows}
                 filters={this.state.filters}
                 onFiltersChange={this.onFiltersChange}
                 onRowsChange={this.onRowsChange}

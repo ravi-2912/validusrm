@@ -67,7 +67,7 @@ class DataGrid extends React.Component {
         rowsCount={filteredRows.length}
         minColumnWidth={120}
         onGridSort={(sortColumn, sortDirection) => {
-          this.setState({ rows: this.sortRows(this.props.rows, sortColumn, sortDirection) });
+          this.props.onRowsChange(this.sortRows(this.props.rows, sortColumn, sortDirection));
         }}
         onGridRowsUpdated={this.onGridRowsUpdated}
         enableCellSelect={true}
