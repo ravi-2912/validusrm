@@ -50,9 +50,23 @@ class FundsManagement extends React.Component {
       })
       .then(funds => {
         const updateFunds = funds.map(fund => {
-          funds.invested_committed = 20;
+          let totalCommitted = 0;
+          let totalInvested = 0;
+          for (let c of fund.committments) {
+            totalCommitted += c.amount;
+            for (let i of c.investments) {
+              totalInvested += i.investment;
+            }
+          }
+          fund.invested_committed = {
+            value: totalCommitted === 0 ? 0 : (100 * totalInvested) / totalCommitted,
+            totalCommitted: totalCommitted,
+            totalInvested: totalInvested,
+          };
+          return fund;
         });
-        this.setState({ funds });
+        console.log(updateFunds);
+        this.setState({ funds: updateFunds });
       })
       .catch(err => console.log(err));
   };
