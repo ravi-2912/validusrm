@@ -11,12 +11,17 @@ class FundsManagement extends React.Component {
   state = {
     view: 'funds',
     funds: [],
+    newFund: {},
     committments: [],
     filters: {},
+    rows: [],
   };
 
   onFiltersChange = filters => this.setState({ filters });
   onRowsChange = rows => this.setState({ rows });
+  onAddRow = index => {
+    console.log(index, this.state.rows.length);
+  };
 
   navBarMenuItems = [
     {
@@ -57,6 +62,7 @@ class FundsManagement extends React.Component {
               totalInvested += i.investment;
             }
           }
+          // added this for progressbar values
           fund.invested_committed = {
             value: totalCommitted === 0 ? 0 : (100 * totalInvested) / totalCommitted,
             totalCommitted: totalCommitted,
@@ -65,6 +71,7 @@ class FundsManagement extends React.Component {
           return fund;
         });
         this.setState({ funds: updateFunds });
+        this.setState({ rows: updateFunds });
       })
       .catch(err => console.log(err));
   };
@@ -97,10 +104,11 @@ class FundsManagement extends React.Component {
               <CommittmentsDataGrid />
             ) : (
               <FundsDataGrid
-                funds={this.state.funds}
-                test={this.state.test}
+                rows={this.state.funds}
+                filters={this.state.filters}
                 onFiltersChange={this.onFiltersChange}
                 onRowsChange={this.onRowsChange}
+                onAddRow={this.onAddRow}
               />
             )}
           </Row>

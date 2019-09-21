@@ -39,12 +39,12 @@ class FundsDataGrid extends React.Component {
       <Container>
         <Row>
           <DataGrid
-            rows={this.props.funds}
             columns={columns}
+            rows={this.props.rows}
             filters={this.props.filters}
             onFiltersChange={this.props.onFiltersChange}
             onRowsChange={this.props.onRowsChange}
-            rowHeight={500}
+            onAddRow={this.props.onAddRow}
           />
         </Row>
       </Container>

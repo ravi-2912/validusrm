@@ -65,7 +65,6 @@ class DataGrid extends React.Component {
         columns={this.props.columns}
         rowGetter={i => filteredRows[i]}
         rowsCount={filteredRows.length}
-        minHeight={500}
         minColumnWidth={120}
         onGridSort={(sortColumn, sortDirection) => {
           this.setState({ rows: this.sortRows(this.props.rows, sortColumn, sortDirection) });
@@ -73,7 +72,12 @@ class DataGrid extends React.Component {
         onGridRowsUpdated={this.onGridRowsUpdated}
         enableCellSelect={true}
         getCellActions={this.getCellActions}
-        toolbar={<Toolbar enableFilter={true} />}
+        toolbar={
+          <Toolbar
+            enableFilter={true}
+            onAddRow={({ newRowIndex }) => this.props.onAddRow(newRowIndex)}
+          />
+        }
         onAddFilter={filter => this.handleFilterChange(filter)}
         onClearFilters={() => this.setState({ filters: {} })}
       />
