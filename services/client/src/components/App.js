@@ -1,26 +1,51 @@
 import React from 'react';
-import logo from '../logo.svg';
+import NavBar from './NavBar';
+import { Container, Row, CardColumns, Card, Button } from 'react-bootstrap';
+import '../css/App.css';
+
 // import '../css/App.css';
 
-function App() {
+class App extends React.Component {
+  menuItems = [
+    {
+      name: 'Capital Calls',
+      route: '/capitalcalls',
+      desc: 'Create  and confirm investments from available funds.',
+      buttonText: 'Make Investments',
+    },
+    {
+      name: 'Funds Management',
+      route: '/fundsmanagement',
+      desc: 'Create and make committments into funds.',
+      buttonText: 'Manage Funds',
+    },
+  ];
+  render() {
     return (
-        <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                    Edit <code>src/App.js</code> and save to reload.
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
-            </header>
-        </div>
+      <div className="App">
+        <NavBar menuItems={this.menuItems} />
+        <Container className="AppContainer">
+          <Row>
+            <CardColumns>
+              {this.menuItems.map(item => {
+                return (
+                  <Card style={{ width: '18rem' }} className="cool-blue">
+                    <Card.Body>
+                      <Card.Title>{item.name}</Card.Title>
+                      <Card.Text>{item.desc}</Card.Text>
+                      <Button variant="dark" href={item.route}>
+                        {item.buttonText}
+                      </Button>
+                    </Card.Body>
+                  </Card>
+                );
+              })}
+            </CardColumns>
+          </Row>
+        </Container>
+      </div>
     );
+  }
 }
 
 export default App;
