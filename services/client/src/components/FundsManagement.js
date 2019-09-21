@@ -12,7 +12,6 @@ class FundsManagement extends React.Component {
     view: 'funds',
     funds: [],
     committments: [],
-    test: 'hmm',
     filters: {},
   };
 
@@ -65,7 +64,6 @@ class FundsManagement extends React.Component {
           };
           return fund;
         });
-        console.log(updateFunds);
         this.setState({ funds: updateFunds });
       })
       .catch(err => console.log(err));

@@ -10,6 +10,7 @@ const columns = [
     sortDescendingFirst: true,
     sortable: true,
     width: 120,
+    filterable: true,
   },
   {
     key: 'name',
@@ -17,6 +18,7 @@ const columns = [
     editable: true,
     sortable: true,
     width: 250,
+    filterable: true,
   },
   {
     key: 'invested_committed',
@@ -42,6 +44,7 @@ class FundsDataGrid extends React.Component {
             filters={this.props.filters}
             onFiltersChange={this.props.onFiltersChange}
             onRowsChange={this.props.onRowsChange}
+            rowHeight={500}
           />
         </Row>
       </Container>
