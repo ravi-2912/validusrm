@@ -2,18 +2,22 @@ import React from 'react';
 import { Container, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
+import Axios from 'axios';
 import NavBar from './NavBar';
 import FundsDataGrid from './FundsDataGrid';
 import CommittmentsDataGrid from './CommittmentsDataGrid';
 
-class FundsManagementApp extends React.Component {
+class FundsManagement extends React.Component {
   state = {
     view: 'funds',
+    funds: [],
+    committments: [],
+    test: 'hmm',
+    filters: {},
   };
 
-  onChangeView = view => {
-    this.setState({ view });
-  };
+  onFiltersChange = filters => this.setState({ filters });
+  onRowsChange = rows => this.setState({ rows });
 
   navBarMenuItems = [
     {
@@ -35,16 +39,63 @@ class FundsManagementApp extends React.Component {
       buttonText: 'Add Committment',
     },
   ];
+
+  getfunds = () => {
+    Axios.get('http://localhost:5000/funds')
+      .then(res => {
+        const data = res.data;
+        if (data.status === 'success') {
+          return data.data.funds;
+        }
+      })
+      .then(funds => {
+        const updateFunds = funds.map(fund => {
+          funds.invested_committed = 20;
+        });
+        this.setState({ funds });
+      })
+      .catch(err => console.log(err));
+  };
+
+  getCommittments = () => {
+    Axios.get('http://localhost:5000/committments')
+      .then(res => {
+        const data = res.data;
+        if (data.status === 'success') {
+          this.setState({ committments: data.data.committments });
+        }
+      })
+      .catch(err => console.log(err));
+  };
+
+  componentDidMount() {
+    this.getfunds();
+  }
+
   render() {
     return (
       <div className="App">
-        <NavBar menuItems={this.navBarMenuItems} onMenuItemClicked={this.onChangeView} />
+        <NavBar
+          menuItems={this.navBarMenuItems}
+          onMenuItemClicked={view => this.setState({ view })}
+        />
         <Container className="AppContainer">
-          <Row>{this.state.view === 'funds' ? <FundsDataGrid /> : <CommittmentsDataGrid />}</Row>
+          <Row>
+            {this.state.view === 'committments' ? (
+              <CommittmentsDataGrid />
+            ) : (
+              <FundsDataGrid
+                funds={this.state.funds}
+                test={this.state.test}
+                onFiltersChange={this.onFiltersChange}
+                onRowsChange={this.onRowsChange}
+              />
+            )}
+          </Row>
         </Container>
       </div>
     );
   }
 }
 
-export default FundsManagementApp;
+export default FundsManagement;

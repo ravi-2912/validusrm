@@ -5,58 +5,9 @@ import { Toolbar, Data } from 'react-data-grid-addons';
 import { ProgressBar, Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
-
 import '../css/DataGrid.css';
 
-const ProgressBarFormatter = ({ value }) => {
-  return <ProgressBar now={value} label={`${value}%`} />;
-};
-
-const defaultColumnProperties = {
-  resizable: true,
-  filterable: true,
-};
-
-const columns = [
-  {
-    key: 'id',
-    name: 'ID',
-    sortDescendingFirst: true,
-    sortable: true,
-    width: 120,
-  },
-  {
-    key: 'name',
-    name: 'Fund Name',
-    editable: true,
-    sortable: true,
-    width: 250,
-  },
-  {
-    key: 'complete',
-    name: 'Complete',
-    formatter: ProgressBarFormatter,
-    sortable: true,
-  },
-  {
-    key: 'actions',
-    name: 'Actions',
-    width: 120,
-  },
-].map(c => ({ ...c, ...defaultColumnProperties }));
-
-const data = [
-  { id: 1, name: 'fund_1', complete: 20 },
-  { id: 2, name: 'fund_2', complete: 40 },
-  { id: 3, name: 'fund_3', complete: 60 },
-];
-
 class DataGrid extends React.Component {
-  state = {
-    rows: [data],
-    filters: {},
-  };
-
   actions = [
     {
       icon: <FontAwesomeIcon icon={Icons.faTimes} />,
@@ -67,13 +18,13 @@ class DataGrid extends React.Component {
   ];
 
   handleFilterChange = filter => {
-    const newFilters = { ...this.state.filters };
+    const newFilters = { ...this.props.filters };
     if (filter.filterTerm) {
       newFilters[filter.column.key] = filter;
     } else {
       delete newFilters[filter.column.key];
     }
-    this.setState({ filters: newFilters });
+    this.props.onFiltersChange(newFilters);
   };
 
   getRows = (rows, filters) => {
@@ -88,11 +39,11 @@ class DataGrid extends React.Component {
   };
 
   onGridRowsUpdated = ({ fromRow, toRow, updated }) => {
-    const rows = this.state.rows;
+    const rows = this.props.rows;
     for (let i = fromRow; i <= toRow; i++) {
       rows[i] = { ...rows[i], ...updated };
     }
-    this.setState({ rows });
+    this.props.onRowsChange(rows);
   };
 
   sortRows = (initialRows, sortColumn, sortDirection) => {
@@ -107,17 +58,17 @@ class DataGrid extends React.Component {
   };
 
   render() {
-    const filteredRows = this.getRows(this.state.rows, this.state.filters);
+    const filteredRows = this.getRows(this.props.rows, this.props.filters);
     return (
       <ReactDataGrid
         className="DataGrid"
-        columns={columns}
+        columns={this.props.columns}
         rowGetter={i => filteredRows[i]}
         rowsCount={filteredRows.length}
         minHeight={500}
         minColumnWidth={120}
         onGridSort={(sortColumn, sortDirection) => {
-          this.setState({ rows: this.sortRows(data, sortColumn, sortDirection) });
+          this.setState({ rows: this.sortRows(this.props.rows, sortColumn, sortDirection) });
         }}
         onGridRowsUpdated={this.onGridRowsUpdated}
         enableCellSelect={true}

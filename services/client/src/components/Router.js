@@ -4,14 +4,14 @@ import App from './App';
 import NotFound from './NotFound';
 import DataGrid from './DataGrid';
 import NavBar from './NavBar';
-import FundsManagementApp from './FundsManagement';
+import FundsManagement from './FundsManagement';
 
 const Router = () => (
   <BrowserRouter>
     <Switch>
       <Route exact path="/grid" component={DataGrid} />
       <Route exact path="/nav" component={NavBar} />
-      <Route exact path="/fundsmanagement" component={FundsManagementApp} />
+      <Route exact path="/fundsmanagement" component={FundsManagement} />
       <Route exact path="/" component={App} />
       <Route component={NotFound} />
     </Switch>

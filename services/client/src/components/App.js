@@ -27,9 +27,9 @@ class App extends React.Component {
         <Container className="AppContainer">
           <Row>
             <CardColumns>
-              {this.menuItems.map(item => {
+              {this.menuItems.map((item, ind) => {
                 return (
-                  <Card style={{ width: '18rem' }} className="cool-blue">
+                  <Card style={{ width: '18rem' }} className="cool-blue" key={ind}>
                     <Card.Body>
                       <Card.Title>{item.name}</Card.Title>
                       <Card.Text>{item.desc}</Card.Text>

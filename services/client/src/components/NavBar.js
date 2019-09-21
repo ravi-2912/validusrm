@@ -6,9 +6,14 @@ import * as Icons from '@fortawesome/free-solid-svg-icons';
 import '../css/NavBar.css';
 
 class NavBar extends React.Component {
+  handleSelect = eventKey => {
+    const menuItems = this.props.menuItems;
+    const clicked = menuItems[eventKey].name.toLowerCase();
+    this.props.onMenuItemClicked(clicked);
+  };
+
   render() {
     const menuItems = this.props.menuItems;
-    const onMenuItemClicked = this.props.onMenuItemClicked;
     return (
       <Navbar collapseOnSelect expand="lg" bg="light" variant="light" fixed="top">
         <Navbar.Brand href="#home">
@@ -16,9 +21,9 @@ class NavBar extends React.Component {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="mr-auto">
+          <Nav className="mr-auto" onSelect={this.handleSelect}>
             {menuItems.map((item, ind) => (
-              <Nav.Link href={item.route} key={ind} onSelect={this.onMenuItemClicked(item.route)}>
+              <Nav.Link href={item.route} eventKey={ind} key={ind}>
                 {item.name}
               </Nav.Link>
             ))}
