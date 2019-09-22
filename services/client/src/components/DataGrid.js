@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactDataGrid from 'react-data-grid';
 import { Toolbar, Data } from 'react-data-grid-addons';
-import { ProgressBar, Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
 import '../css/DataGrid.css';
@@ -72,12 +71,7 @@ class DataGrid extends React.Component {
         onGridRowsUpdated={this.onGridRowsUpdated}
         enableCellSelect={true}
         getCellActions={this.getCellActions}
-        toolbar={
-          <Toolbar
-            enableFilter={true}
-            onAddRow={({ newRowIndex }) => this.props.onAddRow(newRowIndex)}
-          />
-        }
+        toolbar={<Toolbar enableFilter={true} />}
         onAddFilter={filter => this.handleFilterChange(filter)}
         onClearFilters={() => this.setState({ filters: {} })}
       />

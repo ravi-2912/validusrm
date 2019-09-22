@@ -78,9 +78,6 @@ class FundsManagement extends React.Component {
     }
     this.setState({ rows });
   };
-  onAddRow = index => {
-    console.log(index, this.state.rows.length);
-  };
 
   onRowDelete = id => {
     const fund = this.state.funds[id - 1];
@@ -142,7 +139,6 @@ class FundsManagement extends React.Component {
                 filters={this.state.filters}
                 onFiltersChange={this.onFiltersChange}
                 onRowsChange={this.onRowsChange}
-                onAddRow={this.onAddRow}
                 onRowDelete={this.onRowDelete}
               />
             )}
