@@ -7,12 +7,15 @@ class AddFund extends React.Component {
     name: '',
   };
 
-  handleClose = toDb => {
-    if (toDb.target.id === 'addToDB') {
-      if (!this.state.name) {
-        alert('Enter a valid fund name.');
-      } else {
-        this.props.addToDB(this.state.name);
+  handleClose = evt => {
+    evt.preventDefault();
+    if (evt) {
+      if (evt.target.id === 'addToDB') {
+        if (!this.state.name) {
+          alert('Enter a valid fund name.');
+        } else {
+          this.props.addToDB(this.state.name);
+        }
       }
     }
     this.setState({ show: false, name: '' });
