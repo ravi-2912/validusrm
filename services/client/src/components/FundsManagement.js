@@ -53,7 +53,6 @@ class FundsManagement extends React.Component {
     newFund: {},
     committments: [],
     filters: {},
-    rows: [],
   };
 
   getfunds = () => {
@@ -71,15 +70,47 @@ class FundsManagement extends React.Component {
           return fund;
         });
         this.setState({ funds: updateFunds });
-        this.setState({ rows: updateFunds });
       })
       .catch(err => console.log(err));
   };
 
+  getCommittments = () => {
+    Axios.get('http://localhost:5000/committments')
+      .then(res => {
+        const data = res.data;
+        if (data.status === 'success') {
+          return data.data.committments;
+        }
+      })
+      .then(committments => {
+        const updateCommittments = committments.map(committment => {
+          // added this for progressbar values
+          committment.invested_committed = calcs([committment]);
+
+          return committment;
+        });
+        this.setState({ committments: updateCommittments });
+      })
+      .catch(err => console.log(err));
+  };
+
+  componentDidMount() {
+    this.getfunds();
+    this.getCommittments();
+  }
+
   onFiltersChange = filters => this.setState({ filters });
+
   onRowsChange = (rows, index = undefined, updated = undefined) => {
     if (index !== undefined && updated) {
-      Axios.put(`http://localhost:5000/funds/${this.state.funds[index].id}`, {
+      let url = `http://localhost:5000/${this.state.view}/`;
+      if (this.state.view === 'funds') {
+        url += `${this.state.funds[index].id}`;
+      } else {
+        console.log(this.state.committments[index]);
+        url += `${this.state.committments[index].id}`;
+      }
+      Axios.put(url, {
         ...updated,
       })
         .then(res => {
@@ -88,47 +119,49 @@ class FundsManagement extends React.Component {
             return data.data;
           }
         })
-        .then(fund => {
-          const funds = this.state.funds;
-          fund.invested_committed = calcs(fund.committments);
-          funds[fund.id - 1] = fund;
-          this.setState({ funds });
-        })
-        .catch(err => console.log(err));
-    }
-    this.setState({ rows });
-  };
-
-  onRowDelete = id => {
-    const fund = this.state.funds[id - 1];
-    if (fund.committments.length > 0) {
-      alert(`First delete committments for Fund ${fund.id} named ${fund.name}.`);
-    } else {
-      Axios.delete(`http://localhost:5000/funds/${id}`)
-        .then(res => {
-          const data = res.data;
-          if (data.status === 'success') {
-            this.getfunds();
+        .then(obj => {
+          if (this.state.view === 'funds') {
+            const fund = obj;
+            const funds = this.state.funds;
+            fund.invested_committed = calcs(fund.committments);
+            funds[fund.id - 1] = fund;
+            this.setState({ funds });
+          } else {
+            const committment = obj;
+            const committments = this.state.committments;
+            committment.invested_committed = calcs([committment]);
+            committments[committment.id - 1] = committment;
+            this.setState({ committment });
           }
         })
         .catch(err => console.log(err));
     }
   };
 
-  getCommittments = () => {
-    Axios.get('http://localhost:5000/committments')
-      .then(res => {
-        const data = res.data;
-        if (data.status === 'success') {
-          this.setState({ committments: data.data.committments });
-        }
-      })
-      .catch(err => console.log(err));
+  onRowDelete = id => {
+    let obj = {};
+    let len = 0;
+    if (this.state.view === 'funds') {
+      obj = this.state.funds[id - 1];
+      len = obj.committments.length;
+    } else {
+      obj = this.state.committments[id - 1];
+      len = obj.investments.length;
+    }
+    if (len > 0) {
+      alert(`First delete dependents for ${this.state.view} ID ${obj.id} .`);
+    } else {
+      Axios.delete(`http://localhost:5000/${this.state.view}/${id}`)
+        .then(res => {
+          const data = res.data;
+          if (data.status === 'success') {
+            this.getfunds();
+            this.getCommittments();
+          }
+        })
+        .catch(err => console.log(err));
+    }
   };
-
-  componentDidMount() {
-    this.getfunds();
-  }
 
   addFundToDB = name => {
     Axios.post('http://localhost:5000/funds', {
@@ -143,17 +176,47 @@ class FundsManagement extends React.Component {
       .catch(err => console.log(err));
   };
 
+  addCommittmentToDB = data => {
+    Axios.post('http://localhost:5000/committments', {
+      ...data,
+    })
+      .then(res => res.data)
+      .then(res => {
+        if (res.status === 'success') {
+          this.getCommittments();
+        }
+      })
+      .catch(err => console.log(err));
+  };
+
   render() {
     return (
       <div className="App">
-        <NavBar menuItems={navBarMenuItems} onMenuItemClicked={view => this.setState({ view })} />
+        <NavBar
+          menuItems={navBarMenuItems}
+          onMenuItemClicked={view => {
+            this.getfunds();
+            if (view === 'committments') {
+              this.getCommittments();
+            }
+            this.setState({ view });
+          }}
+        />
         <Container className="AppContainer">
           <Row>
             {this.state.view === 'committments' ? (
-              <CommittmentsDataGrid />
+              <CommittmentsDataGrid
+                rows={this.state.committments}
+                filters={this.state.filters}
+                onFiltersChange={this.onFiltersChange}
+                onRowsChange={this.onRowsChange}
+                onRowDelete={this.onRowDelete}
+                addCommittmentToDB={this.addCommittmentToDB}
+                funds={this.state.funds}
+              />
             ) : (
               <FundsDataGrid
-                rows={this.state.rows}
+                rows={this.state.funds}
                 filters={this.state.filters}
                 onFiltersChange={this.onFiltersChange}
                 onRowsChange={this.onRowsChange}
