@@ -75,18 +75,19 @@ def add_capitalcall(name, capital, date=None):
     return call
 
 
-def add_fundinvestment(amount, fund, committment, call):
+def add_fundinvestment(amount, committment, call):
     fund_invest = Investment(amount)
     db.session.add(fund_invest)
     db.session.commit()
     ins = FundInvestments.insert().values(
-        fund_id=fund.id,
+        fund_id=committment.fund_id,
         committment_id=committment.id,
         capitalcall_id=call.id,
         fundinvestment_id=fund_invest.id
     )
     db.session.execute(ins)
     db.session.commit()
+    return fund_invest
 
 
 def delete(obj):
