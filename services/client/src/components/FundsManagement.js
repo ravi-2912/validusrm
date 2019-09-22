@@ -56,6 +56,26 @@ class FundsManagement extends React.Component {
     rows: [],
   };
 
+  getfunds = () => {
+    Axios.get('http://localhost:5000/funds')
+      .then(res => {
+        const data = res.data;
+        if (data.status === 'success') {
+          return data.data.funds;
+        }
+      })
+      .then(funds => {
+        const updateFunds = funds.map(fund => {
+          // added this for progressbar values
+          fund.invested_committed = calcs(fund.committments);
+          return fund;
+        });
+        this.setState({ funds: updateFunds });
+        this.setState({ rows: updateFunds });
+      })
+      .catch(err => console.log(err));
+  };
+
   onFiltersChange = filters => this.setState({ filters });
   onRowsChange = (rows, index = undefined, updated = undefined) => {
     if (index !== undefined && updated) {
@@ -81,33 +101,18 @@ class FundsManagement extends React.Component {
 
   onRowDelete = id => {
     const fund = this.state.funds[id - 1];
-    if (fund.committments) {
+    if (fund.committments.length > 0) {
       alert(`First delete committments for Fund ${fund.id} named ${fund.name}.`);
     } else {
       Axios.delete(`http://localhost:5000/funds/${id}`)
-        .then(res => console.log(res))
+        .then(res => {
+          const data = res.data;
+          if (data.status === 'success') {
+            this.getfunds();
+          }
+        })
         .catch(err => console.log(err));
     }
-  };
-
-  getfunds = () => {
-    Axios.get('http://localhost:5000/funds')
-      .then(res => {
-        const data = res.data;
-        if (data.status === 'success') {
-          return data.data.funds;
-        }
-      })
-      .then(funds => {
-        const updateFunds = funds.map(fund => {
-          // added this for progressbar values
-          fund.invested_committed = calcs(fund.committments);
-          return fund;
-        });
-        this.setState({ funds: updateFunds });
-        this.setState({ rows: updateFunds });
-      })
-      .catch(err => console.log(err));
   };
 
   getCommittments = () => {
@@ -129,8 +134,12 @@ class FundsManagement extends React.Component {
     Axios.post('http://localhost:5000/funds', {
       name,
     })
-      .then(res => console.log(res))
-      .then(res => this.getfunds())
+      .then(res => res.data)
+      .then(res => {
+        if (res.status === 'success') {
+          this.getfunds();
+        }
+      })
       .catch(err => console.log(err));
   };
 

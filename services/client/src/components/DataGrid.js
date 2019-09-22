@@ -24,7 +24,12 @@ class DataGrid extends React.Component {
   getCellActions = (column, row) => {
     let actions = [
       {
-        icon: <FontAwesomeIcon icon={Icons.faTimes} />,
+        icon: (
+          <FontAwesomeIcon
+            icon={Icons.faTimes}
+            color={row.committments.length === 0 ? 'red' : 'lightgrey'}
+          />
+        ),
         callback: () => {
           this.props.onRowDelete(row.id);
         },
