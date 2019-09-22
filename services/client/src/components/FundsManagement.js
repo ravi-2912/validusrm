@@ -125,6 +125,15 @@ class FundsManagement extends React.Component {
     this.getfunds();
   }
 
+  addFundToDB = name => {
+    Axios.post('http://localhost:5000/funds', {
+      name,
+    })
+      .then(res => console.log(res))
+      .then(res => this.getfunds())
+      .catch(err => console.log(err));
+  };
+
   render() {
     return (
       <div className="App">
@@ -140,6 +149,7 @@ class FundsManagement extends React.Component {
                 onFiltersChange={this.onFiltersChange}
                 onRowsChange={this.onRowsChange}
                 onRowDelete={this.onRowDelete}
+                addFundToDB={this.addFundToDB}
               />
             )}
           </Row>
