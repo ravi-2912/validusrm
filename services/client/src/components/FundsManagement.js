@@ -109,7 +109,6 @@ class FundsManagement extends React.Component {
       if (this.state.view === 'funds') {
         url += `${this.state.funds[index].id}`;
       } else {
-        console.log(this.state.committments[index]);
         url += `${this.state.committments[index].id}`;
       }
       Axios.put(url, {
@@ -137,6 +136,11 @@ class FundsManagement extends React.Component {
           }
         })
         .catch(err => console.log(err));
+    }
+    if (this.state.view === 'funds') {
+      this.setState({ funds: rows });
+    } else {
+      this.setState({ committments: rows });
     }
   };
 
