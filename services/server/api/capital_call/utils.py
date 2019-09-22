@@ -1,7 +1,7 @@
 from api.capital_call.funds import Fund
 from api.capital_call.committments import Committment
 from api.capital_call.capital_calls import CapitalCall
-from api.capital_call.investments import Investment
+from api.capital_call.investments import Investment, FundInvestments
 from api import db
 
 
@@ -79,9 +79,13 @@ def add_fundinvestment(amount, fund, committment, call):
     fund_invest = Investment(amount)
     db.session.add(fund_invest)
     db.session.commit()
-    fund_invest.fund.append(fund)
-    fund_invest.committment.append(committment)
-    fund_invest.capitalcall.append(call)
+    ins = FundInvestments.insert().values(
+        fund_id=fund.id,
+        committment_id=committment.id,
+        capitalcall_id=call.id,
+        fundinvestment_id=fund_invest.id
+    )
+    db.session.execute(ins)
     db.session.commit()
 
 
