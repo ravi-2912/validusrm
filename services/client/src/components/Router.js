@@ -11,7 +11,7 @@ const Router = () => (
     <Switch>
       <Route exact path="/grid" component={DataGrid} />
       <Route exact path="/nav" component={NavBar} />
-      <Route exact path="/fundsmanagement" component={FundsManagement} />
+      <Route exact path="/:direction(funds|committments)" component={FundsManagement} />
       <Route exact path="/" component={App} />
       <Route component={NotFound} />
     </Switch>

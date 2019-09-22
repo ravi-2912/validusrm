@@ -21,7 +21,7 @@ class NavBar extends React.Component {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="mr-auto" onSelect={this.handleSelect}>
+          <Nav className="mr-auto" onSelect={this.handleSelect} activeKey={this.props.activeItem}>
             {menuItems.map((item, ind) => (
               <Nav.Link href={item.route} eventKey={ind} key={ind}>
                 {item.name}

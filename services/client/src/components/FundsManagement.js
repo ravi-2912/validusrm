@@ -16,13 +16,13 @@ const navBarMenuItems = [
   },
   {
     name: 'Funds',
-    route: '',
+    route: '/funds',
     desc: 'List all funds',
     buttonText: 'Add Fund',
   },
   {
     name: 'Committments',
-    route: '',
+    route: '/committments',
     desc: 'List all committments.',
     buttonText: 'Add Committment',
   },
@@ -48,7 +48,7 @@ const calcs = committments => {
 
 class FundsManagement extends React.Component {
   state = {
-    view: 'funds',
+    view: '',
     funds: [],
     newFund: {},
     committments: [],
@@ -95,6 +95,8 @@ class FundsManagement extends React.Component {
   };
 
   componentDidMount() {
+    const view = window.location.pathname.slice(1);
+    this.setState({ view });
     this.getfunds();
     this.getCommittments();
   }
@@ -193,6 +195,7 @@ class FundsManagement extends React.Component {
     return (
       <div className="App">
         <NavBar
+          activeItem={this.state.view === 'funds' ? 1 : 2}
           menuItems={navBarMenuItems}
           onMenuItemClicked={view => {
             this.getfunds();

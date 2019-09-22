@@ -15,7 +15,7 @@ class App extends React.Component {
     },
     {
       name: 'Funds Management',
-      route: '/fundsmanagement',
+      route: '/funds',
       desc: 'Create and make committments into funds.',
       buttonText: 'Manage Funds',
     },
