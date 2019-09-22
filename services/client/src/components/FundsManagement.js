@@ -18,9 +18,30 @@ class FundsManagement extends React.Component {
   };
 
   onFiltersChange = filters => this.setState({ filters });
-  onRowsChange = rows => this.setState({ rows });
+  onRowsChange = (rows, i = undefined, updated = undefined) => {
+    if (i !== undefined && updated) {
+      Axios.put(`http://localhost:5000/funds/${this.state.funds[i].id}`, {
+        ...updated,
+      })
+        .then(res => {
+          console.log(res);
+          const data = res.data;
+          console.log(data);
+          if (data.status === 'success') {
+            return data.data;
+          }
+        })
+        .then(fund => console.log(fund))
+        .catch(err => console.log(err));
+    }
+    this.setState({ rows });
+  };
   onAddRow = index => {
     console.log(index, this.state.rows.length);
+  };
+
+  onRowDelete = index => {
+    alert(`Delete ${index}`);
   };
 
   navBarMenuItems = [
@@ -109,6 +130,7 @@ class FundsManagement extends React.Component {
                 onFiltersChange={this.onFiltersChange}
                 onRowsChange={this.onRowsChange}
                 onAddRow={this.onAddRow}
+                onRowDelete={this.onRowDelete}
               />
             )}
           </Row>

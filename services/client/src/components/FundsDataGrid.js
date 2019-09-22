@@ -45,6 +45,7 @@ class FundsDataGrid extends React.Component {
             onFiltersChange={this.props.onFiltersChange}
             onRowsChange={this.props.onRowsChange}
             onAddRow={this.props.onAddRow}
+            onRowDelete={this.props.onRowDelete}
           />
         </Row>
       </Container>

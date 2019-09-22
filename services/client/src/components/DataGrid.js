@@ -8,15 +8,6 @@ import * as Icons from '@fortawesome/free-solid-svg-icons';
 import '../css/DataGrid.css';
 
 class DataGrid extends React.Component {
-  actions = [
-    {
-      icon: <FontAwesomeIcon icon={Icons.faTimes} />,
-      callback: () => {
-        alert('Deleting');
-      },
-    },
-  ];
-
   handleFilterChange = filter => {
     const newFilters = { ...this.props.filters };
     if (filter.filterTerm) {
@@ -32,18 +23,33 @@ class DataGrid extends React.Component {
   };
 
   getCellActions = (column, row) => {
-    const cellActions = {
-      actions: this.actions,
-    };
-    return cellActions[column.key];
+    let actions = [
+      {
+        icon: <FontAwesomeIcon icon={Icons.faTimes} />,
+        callback: () => {
+          this.props.onRowDelete(row.id);
+        },
+      },
+    ];
+
+    const cellActions = { actions };
+    if (column.key === 'actions') {
+      console.log(cellActions[column.key]);
+      return cellActions[column.key];
+    } else {
+      return null;
+    }
   };
 
   onGridRowsUpdated = ({ fromRow, toRow, updated }) => {
-    const rows = this.props.rows;
-    for (let i = fromRow; i <= toRow; i++) {
+    if (fromRow !== toRow) {
+      alert('Multiple rows HTTP PUT not allowed.');
+    } else {
+      const rows = this.props.rows;
+      let i = fromRow;
       rows[i] = { ...rows[i], ...updated };
+      this.props.onRowsChange(rows, fromRow, updated);
     }
-    this.props.onRowsChange(rows);
   };
 
   sortRows = (initialRows, sortColumn, sortDirection) => {
