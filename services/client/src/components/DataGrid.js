@@ -27,11 +27,17 @@ class DataGrid extends React.Component {
         icon: (
           <FontAwesomeIcon
             icon={Icons.faTimes}
-            color={row.committments.length === 0 ? 'red' : 'lightgrey'}
+            // color={row.committments.length === 0 ? 'red' : 'lightgrey'}
           />
         ),
         callback: () => {
           this.props.onRowDelete(row.id);
+        },
+      },
+      {
+        icon: <FontAwesomeIcon icon={Icons.faDollarSign} />,
+        callback: () => {
+          console.log('hmm');
         },
       },
     ];
