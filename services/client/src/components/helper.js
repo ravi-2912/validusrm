@@ -15,3 +15,9 @@ export const ProgressBarFormatter = data => {
 export const defaultColumnProperties = {
   resizable: true,
 };
+
+export const DateFormatter = date => {
+  const dateString = date.value.toString().split(' ')[0];
+
+  return <div>{dateString}</div>;
+};
