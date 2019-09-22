@@ -95,7 +95,7 @@ class FundsManagement extends React.Component {
   };
 
   componentDidMount() {
-    const view = window.location.pathname.slice(1);
+    const view = this.props.location.pathname.slice(1);
     this.setState({ view });
     this.getfunds();
     this.getCommittments();
