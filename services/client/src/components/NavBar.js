@@ -16,7 +16,7 @@ class NavBar extends React.Component {
     const menuItems = this.props.menuItems;
     return (
       <Navbar collapseOnSelect expand="lg" bg="light" variant="light" fixed="top">
-        <Navbar.Brand href="#home">
+        <Navbar.Brand href="/">
           <img src="res/logo.png" alt="logo" height="50px" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -28,14 +28,14 @@ class NavBar extends React.Component {
               </Nav.Link>
             ))}
           </Nav>
-          <Nav>
+          {/* <Nav>
             <Nav.Link href="#deets">
               <FontAwesomeIcon icon={Icons.faUser} />
             </Nav.Link>
             <Nav.Link eventKey={2} href="#memes">
               <FontAwesomeIcon icon={Icons.faSignOutAlt} />
             </Nav.Link>
-          </Nav>
+          </Nav> */}
         </Navbar.Collapse>
       </Navbar>
     );
