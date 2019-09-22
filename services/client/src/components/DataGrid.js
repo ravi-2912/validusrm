@@ -31,14 +31,8 @@ class DataGrid extends React.Component {
         },
       },
     ];
-
     const cellActions = { actions };
-    if (column.key === 'actions') {
-      console.log(cellActions[column.key]);
-      return cellActions[column.key];
-    } else {
-      return null;
-    }
+    return column.key === 'actions' ? cellActions[column.key] : null;
   };
 
   onGridRowsUpdated = ({ fromRow, toRow, updated }) => {
