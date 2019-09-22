@@ -18,13 +18,13 @@ const navBarMenuItems = [
     name: 'Funds',
     route: '/funds',
     desc: 'List all funds',
-    buttonText: 'Add Fund',
+    buttonText: 'List Funds',
   },
   {
     name: 'Committments',
     route: '/committments',
     desc: 'List all committments.',
-    buttonText: 'Add Committment',
+    buttonText: 'List Committments',
   },
 ];
 
