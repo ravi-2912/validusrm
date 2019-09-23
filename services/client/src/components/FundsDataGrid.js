@@ -1,8 +1,11 @@
 import React from 'react';
-import DataGrid from './DataGrid';
+import PropTypes from 'prop-types';
+import { Container, Row } from 'react-bootstrap';
+
 import AddFund from './AddFund';
-import { Container, Row, Button } from 'react-bootstrap';
+import DataGrid from './DataGrid';
 import { ProgressBarFormatter, defaultColumnProperties } from './helper';
+
 import '../css/FundsDataGrid.css';
 
 const columns = [
@@ -36,6 +39,16 @@ const columns = [
 ].map(c => ({ ...c, ...defaultColumnProperties }));
 
 class FundsDataGrid extends React.Component {
+  static propTypes = {
+    rows: PropTypes.array,
+    filters: PropTypes.object,
+    onFiltersChange: PropTypes.func,
+    onRowsChange: PropTypes.func,
+    onAddRow: PropTypes.func,
+    onRowDelete: PropTypes.func,
+    addFundToDB: PropTypes.func,
+  };
+
   render() {
     return (
       <Container>
