@@ -1,8 +1,8 @@
 import React from 'react';
-import { Container, Row } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import * as Icons from '@fortawesome/free-solid-svg-icons';
 import Axios from 'axios';
+import PropTypes from 'prop-types';
+import { Container, Row } from 'react-bootstrap';
+
 import NavBar from './NavBar';
 import FundsDataGrid from './FundsDataGrid';
 import CommittmentsDataGrid from './CommittmentsDataGrid';
@@ -53,6 +53,10 @@ class FundsManagement extends React.Component {
     newFund: {},
     committments: [],
     filters: {},
+  };
+
+  static propTypes = {
+    location: PropTypes.object.isRequired,
   };
 
   getfunds = () => {
