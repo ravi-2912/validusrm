@@ -3,6 +3,7 @@ import Axios from 'axios';
 import PropTypes from 'prop-types';
 import { Container, Row } from 'react-bootstrap';
 
+import NewCall from './NewCall';
 import NavBar from './NavBar';
 import CapitalCallsDataGrid from './CapitalCallsDataGrid';
 import { calcs_for_funds_invested_committed } from './helper';
@@ -82,20 +83,19 @@ class CapitalCallsManagement extends React.Component {
       })
       .then(calls => {
         // Quite complex manipulation to create a table for dashboard
-        // const invs = this.state.fundinvestments;
-        // const funds = this.state.funds;
-        // calls.map(c => (c.fund_committments = []));
-        // const funds_committments = funds.map(fund => fund.committments).flat();
-        // calls.map(call => {
-        //   invs.map(inv => {
-        //     if (inv.capitalcall_id === call.id) {
-        //       call.fund_committments.push(
-        //         funds_committments.filter(fic => fic.id === inv.committment_id)[0],
-        //       );
-        //     }
-        //   });
-        // });
-        // console.log('CALLS', calls);
+        const invs = this.state.fundinvestments;
+        const funds = this.state.funds;
+        calls.map(call => {
+          let call_invs = call.investments;
+          for (const [ind, i] of call_invs.entries()) {
+            for (let inv of invs) {
+              if (i.id === inv.fundinvestment_id) {
+                call.investments[ind].fund_name = funds.filter(f => f.id === inv.fund_id)[0].name;
+                call.investments[ind].fund_id = funds.filter(f => f.id === inv.fund_id)[0].id;
+              }
+            }
+          }
+        });
         return calls;
       })
       .then(calls => this.setState({ calls }))
@@ -189,11 +189,7 @@ class CapitalCallsManagement extends React.Component {
                 onRowDelete={this.onRowDelete}
               />
             ) : (
-              <p>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate fugit sed
-                aperiam, officia inventore a facere quae velit similique at ea dolor earum qui unde
-                amet aut dolorem minus pariatur.
-              </p>
+              <NewCall />
             )}
           </Row>
         </Container>
