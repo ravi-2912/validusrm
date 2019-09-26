@@ -3,10 +3,12 @@ import Axios from 'axios';
 import PropTypes from 'prop-types';
 import { Container, Row } from 'react-bootstrap';
 
-import NewCall from './NewCall';
 import NavBar from './NavBar';
+import NewCall from './NewCall';
 import CapitalCallsDataGrid from './CapitalCallsDataGrid';
 import { calcs_for_funds_invested_committed } from './helper';
+
+import '../css/App.css';
 
 const navBarMenuItems = [
   {
