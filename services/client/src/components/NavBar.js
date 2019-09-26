@@ -12,7 +12,14 @@ class NavBar extends React.Component {
   render() {
     const menuItems = this.props.menuItems;
     return (
-      <Navbar collapseOnSelect expand="lg" bg="light" variant="light" fixed="top" className="border-bottom shadow-sm">
+      <Navbar
+        collapseOnSelect
+        expand="lg"
+        bg="light"
+        variant="light"
+        fixed="top"
+        className="border-bottom shadow-sm"
+      >
         <Navbar.Brand href="/">
           <img src="res/logo.png" alt="logo" height="50px" />
         </Navbar.Brand>
