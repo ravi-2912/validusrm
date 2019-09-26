@@ -21,4 +21,11 @@
     "editor.formatOnSave": true,
     "eslint.autoFixOnSave": true,
     "eslint.alwaysShowStatus": true,
+    "sqltools.connections": [{
+        "askForPassword": false,
+        "database": ".\\services\\server\\api\\local_dev.db",
+        "dialect": "SQLite",
+        "name": "validus_dev"
+    }],
+    "sqltools.useNodeRuntime": true,
 }
