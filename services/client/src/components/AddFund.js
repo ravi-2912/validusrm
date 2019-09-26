@@ -8,8 +8,8 @@ class AddFund extends React.Component {
   };
 
   handleClose = evt => {
-    evt.preventDefault();
     if (evt) {
+      evt.preventDefault();
       if (evt.target.id === 'addToDB') {
         if (!this.state.name) {
           alert('Enter a valid fund name.');
