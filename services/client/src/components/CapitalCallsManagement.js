@@ -85,7 +85,7 @@ class CapitalCallsManagement extends React.Component {
         // Quite complex manipulation to create a table for dashboard
         const invs = this.state.fundinvestments;
         const funds = this.state.funds;
-        calls.map(call => {
+        return calls.map(call => {
           let call_invs = call.investments;
           for (const [ind, i] of call_invs.entries()) {
             for (let inv of invs) {
@@ -95,8 +95,8 @@ class CapitalCallsManagement extends React.Component {
               }
             }
           }
+          return call;
         });
-        return calls;
       })
       .then(calls => this.setState({ calls }))
       .catch(err => console.log(err));
