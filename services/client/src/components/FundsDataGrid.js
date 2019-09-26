@@ -7,8 +7,6 @@ import DataGrid from './DataGrid';
 import FundProgressBar from './FundProgressBar';
 import { defaultColumnProperties } from './helper';
 
-import '../css/FundsDataGrid.css';
-
 const columns = [
   {
     key: 'id',
