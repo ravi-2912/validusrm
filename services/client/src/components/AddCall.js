@@ -3,17 +3,17 @@ import { Form, Button, Col } from 'react-bootstrap';
 import DatePicker from 'react-date-picker';
 
 class AddCall extends React.Component {
-  state = {
-    date: new Date(),
-  };
-  onChange = date => this.setState({ date });
   render() {
     return (
       <Col className="text-left" lg={6}>
         <Form>
           <Form.Group controlId="formDate">
             <Form.Label>Select a Call Date</Form.Label>
-            <DatePicker onChange={this.onChange} value={this.state.date} className="form-control" />
+            <DatePicker
+              onChange={this.props.onDateChange}
+              value={this.props.date}
+              className="form-control"
+            />
             <Form.Text className="text-muted">Date when the call is made.</Form.Text>
           </Form.Group>
 
