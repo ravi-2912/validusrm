@@ -31,6 +31,30 @@
 
 }
 
+.subu {
+  background: #0cebeb;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #29ffc6, #20e3b2, #0cebeb);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #29ffc6, #20e3b2, #0cebeb);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
 .AppContainer {
   margin-top: 100px;
+}
+
+.react-grid-Main .form-control {
+  height: calc(1.0em + 0.7rem + 2px) !important;
+  font-size: 0.9rem !important;
+  font-weight: 600;
+}
+
+.react-grid-HeaderCell-sortable span {
+  float: right !important;
+}
+
+.rdg-cell-action-button {
+  padding-top: 5px;
 }
