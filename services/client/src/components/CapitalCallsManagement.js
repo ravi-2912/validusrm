@@ -8,8 +8,6 @@ import NewCall from './NewCall';
 import CapitalCallsDataGrid from './CapitalCallsDataGrid';
 import { calcs_for_funds_invested_committed } from './helper';
 
-import '../css/App.css';
-
 const navBarMenuItems = [
   {
     name: 'Home',

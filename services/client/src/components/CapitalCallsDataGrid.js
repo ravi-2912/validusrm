@@ -1,7 +1,7 @@
 import React from 'react';
-import DataGrid from './DataGrid';
 import { Container, Row, Button } from 'react-bootstrap';
 
+import DataGrid from './DataGrid';
 import CallsProgressBar from './CallProgressBar';
 import { defaultColumnProperties, DateFormatter, currencyFormat } from './helper';
 
@@ -19,7 +19,7 @@ const columns = [
     key: 'id',
     name: 'Call ID',
     sortable: true,
-    width: 80,
+    width: 90,
     filterable: true,
   },
   {
@@ -48,14 +48,14 @@ class CapitalCallsDataGrid extends React.Component {
   render() {
     return (
       <Container>
-        <Row className="main-desc">
+        <Row className="pb-5">
           <h3>Capital Calls</h3>
-          <p className="desc">To add a new capital call press the button below.</p>
+          <p className="text-left d-block">To add a new capital call press the button below.</p>
           <Button href="/newcall">Add a New Call</Button>
         </Row>
         <Row>
           <h4>Capital Calls List</h4>
-          <p>
+          <p className="text-left">
             To view confirmed capital calls the list is shown below. The list can be filtered as
             desired. In the list, the capital required are fullfilled from various funds.
           </p>

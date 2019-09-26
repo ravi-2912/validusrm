@@ -1,6 +1,8 @@
 import React from 'react';
-import NavBar from './NavBar';
 import { Container, Row, CardColumns, Card, Button } from 'react-bootstrap';
+
+import NavBar from './NavBar';
+
 import '../css/App.css';
 
 class App extends React.Component {
@@ -27,7 +29,11 @@ class App extends React.Component {
             <CardColumns>
               {this.menuItems.map((item, ind) => {
                 return (
-                  <Card style={{ width: '18rem' }} className="cool-blue" key={ind}>
+                  <Card
+                    style={{ width: '18rem' }}
+                    className={['fb-messenger', 'subu'][ind % 2]}
+                    key={ind}
+                  >
                     <Card.Body>
                       <Card.Title>{item.name}</Card.Title>
                       <Card.Text>{item.desc}</Card.Text>
