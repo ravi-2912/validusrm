@@ -83,3 +83,7 @@
 .rdg-cell-action-button {
   padding-top: 5px;
 }
+
+.react-date-picker__wrapper {
+  border: none !important;
+}
