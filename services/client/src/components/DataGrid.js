@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import ReactDataGrid from 'react-data-grid';
 import { Toolbar, Data } from 'react-data-grid-addons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
