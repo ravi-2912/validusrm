@@ -1,6 +1,5 @@
 import React from 'react';
 import * as Numeral from 'numeral';
-import { ProgressBar } from 'react-bootstrap';
 
 export const currencyFormat = val => {
   let cur = Numeral(val).format('0.00a');
