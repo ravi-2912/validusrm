@@ -1,9 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
 import App from './App';
+import NavBar from './NavBar';
 import NotFound from './NotFound';
 import DataGrid from './DataGrid';
-import NavBar from './NavBar';
 import FundsManagement from './FundsManagement';
 import CapitalCallsManagement from './CapitalCallsManagement';
 
