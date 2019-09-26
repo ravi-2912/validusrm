@@ -4,7 +4,6 @@ import { Container, Row, Button } from 'react-bootstrap';
 
 import CallsProgressBar from './CallProgressBar';
 import { defaultColumnProperties, DateFormatter, currencyFormat } from './helper';
-import '../css/CapitalCallsDataGrid.css';
 
 const columns = [
   {
