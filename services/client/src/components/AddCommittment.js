@@ -9,8 +9,8 @@ class AddCommittment extends React.Component {
   };
 
   handleClose = evt => {
-    evt.preventDefault();
     if (evt) {
+      evt.preventDefault();
       if (evt.target.id === 'addToDB') {
         if (!parseFloat(this.state.amount)) {
           alert('Enter a valid committment amount.');
