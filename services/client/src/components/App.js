@@ -3,13 +3,11 @@ import NavBar from './NavBar';
 import { Container, Row, CardColumns, Card, Button } from 'react-bootstrap';
 import '../css/App.css';
 
-// import '../css/App.css';
-
 class App extends React.Component {
   menuItems = [
     {
       name: 'Capital Calls',
-      route: '/capitalcalls',
+      route: '/dashboard',
       desc: 'Create  and confirm investments from available funds.',
       buttonText: 'Make Investments',
     },
