@@ -53,9 +53,9 @@ class FundsDataGrid extends React.Component {
   render() {
     return (
       <Container>
-        <Row className="main-desc">
+        <Row className="pb-5">
           <h3>Funds Management</h3>
-          <p className="desc">
+          <p className="text-left">
             Manage funds by adding more or deleting. For deleting funds thast have committments or
             invested these need to be deleted first. The table below list all funds. The progress
             bar indicated the total investment / total committed for the fund.
@@ -64,10 +64,10 @@ class FundsDataGrid extends React.Component {
         </Row>
         <Row>
           <h4>Funds List</h4>
-          <p className="desc">
+          <p className="text-left">
             To filter press the Filter button. To edit fund name double click the fund name cell and
             edit, once done press enter and it will autpomatically post the data in the database. To
-            delete the fund presse the cross sign.
+            delete the fund press the cross sign.
           </p>
           <DataGrid
             columns={columns}
