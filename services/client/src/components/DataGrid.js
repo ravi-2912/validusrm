@@ -3,7 +3,6 @@ import ReactDataGrid from 'react-data-grid';
 import { Toolbar, Data } from 'react-data-grid-addons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
-import '../css/DataGrid.css';
 
 class DataGrid extends React.Component {
   handleFilterChange = filter => {
@@ -31,12 +30,6 @@ class DataGrid extends React.Component {
         ),
         callback: () => {
           this.props.onRowDelete(row.id);
-        },
-      },
-      {
-        icon: <FontAwesomeIcon icon={Icons.faDollarSign} />,
-        callback: () => {
-          console.log('hmm');
         },
       },
     ];
@@ -70,7 +63,7 @@ class DataGrid extends React.Component {
     const filteredRows = this.getRows(this.props.rows, this.props.filters);
     return (
       <ReactDataGrid
-        className="DataGrid"
+        className="text-left"
         columns={this.props.columns}
         rowGetter={i => filteredRows[i]}
         rowsCount={filteredRows.length}
