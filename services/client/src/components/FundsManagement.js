@@ -6,6 +6,7 @@ import { Container, Row } from 'react-bootstrap';
 import NavBar from './NavBar';
 import FundsDataGrid from './FundsDataGrid';
 import CommittmentsDataGrid from './CommittmentsDataGrid';
+import { calcs_for_funds_invested_committed } from './helper';
 
 const navBarMenuItems = [
   {
@@ -27,24 +28,6 @@ const navBarMenuItems = [
     buttonText: 'List Committments',
   },
 ];
-
-const calcs = committments => {
-  let totalCommitted = 0;
-  let totalInvested = 0;
-  for (let c of committments) {
-    totalCommitted += c.amount;
-    for (let i of c.investments) {
-      totalInvested += i.investment;
-    }
-  }
-  // added this for progressbar values
-  const invested_committed = {
-    value: totalCommitted === 0 ? 0 : (100 * totalInvested) / totalCommitted,
-    totalCommitted: totalCommitted,
-    totalInvested: totalInvested,
-  };
-  return invested_committed;
-};
 
 class FundsManagement extends React.Component {
   state = {
@@ -70,7 +53,7 @@ class FundsManagement extends React.Component {
       .then(funds => {
         const updateFunds = funds.map(fund => {
           // added this for progressbar values
-          fund.invested_committed = calcs(fund.committments);
+          fund.invested_committed = calcs_for_funds_invested_committed(fund.committments);
           return fund;
         });
         this.setState({ funds: updateFunds });
@@ -89,7 +72,7 @@ class FundsManagement extends React.Component {
       .then(committments => {
         const updateCommittments = committments.map(committment => {
           // added this for progressbar values
-          committment.invested_committed = calcs([committment]);
+          committment.invested_committed = calcs_for_funds_invested_committed([committment]);
 
           return committment;
         });
@@ -128,13 +111,13 @@ class FundsManagement extends React.Component {
           if (this.state.view === 'funds') {
             const fund = obj;
             const funds = this.state.funds;
-            fund.invested_committed = calcs(fund.committments);
+            fund.invested_committed = calcs_for_funds_invested_committed(fund.committments);
             funds[fund.id - 1] = fund;
             this.setState({ funds });
           } else {
             const committment = obj;
             const committments = this.state.committments;
-            committment.invested_committed = calcs([committment]);
+            committment.invested_committed = calcs_for_funds_invested_committed([committment]);
             committments[committment.id - 1] = committment;
             this.setState({ committment });
           }
@@ -152,10 +135,11 @@ class FundsManagement extends React.Component {
     let obj = {};
     let len = 0;
     if (this.state.view === 'funds') {
-      obj = this.state.funds[id - 1];
+      obj = this.state.funds.filter(fund => fund.id === id)[0];
       len = obj.committments.length;
     } else {
-      obj = this.state.committments[id - 1];
+      obj = this.state.committments.filter(c => c.id === id)[0];
+      console.log(obj);
       len = obj.investments.length;
     }
     if (len > 0) {
