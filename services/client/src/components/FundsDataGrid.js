@@ -4,7 +4,8 @@ import { Container, Row } from 'react-bootstrap';
 
 import AddFund from './AddFund';
 import DataGrid from './DataGrid';
-import { ProgressBarFormatter, defaultColumnProperties } from './helper';
+import FundProgressBar from './FundProgressBar';
+import { defaultColumnProperties } from './helper';
 
 import '../css/FundsDataGrid.css';
 
@@ -29,7 +30,7 @@ const columns = [
     key: 'invested_committed',
     name: 'Total Invested & Committed',
     sortable: true,
-    formatter: ProgressBarFormatter,
+    formatter: FundProgressBar,
   },
   {
     key: 'actions',
@@ -74,7 +75,6 @@ class FundsDataGrid extends React.Component {
             filters={this.props.filters}
             onFiltersChange={this.props.onFiltersChange}
             onRowsChange={this.props.onRowsChange}
-            onAddRow={this.props.onAddRow}
             onRowDelete={this.props.onRowDelete}
           />
         </Row>
