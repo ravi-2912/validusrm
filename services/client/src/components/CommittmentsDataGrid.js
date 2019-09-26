@@ -1,9 +1,9 @@
 import React from 'react';
 import DataGrid from './DataGrid';
 import AddCommittment from './AddCommittment';
-import { Container, Row, Button } from 'react-bootstrap';
-import { ProgressBarFormatter, defaultColumnProperties, DateFormatter } from './helper';
-//import '../css/CommittmentsDataGrid.css';
+import { Container, Row } from 'react-bootstrap';
+import { defaultColumnProperties, DateFormatter } from './helper';
+import FundsProgressBar from './FundProgressBar';
 
 const columns = [
   {
@@ -43,7 +43,7 @@ const columns = [
     key: 'invested_committed',
     name: 'Total Invested & Committed',
     sortable: true,
-    formatter: ProgressBarFormatter,
+    formatter: FundsProgressBar,
   },
   {
     key: 'actions',
