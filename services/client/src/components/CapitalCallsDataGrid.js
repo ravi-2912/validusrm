@@ -1,25 +1,10 @@
 import React from 'react';
 import DataGrid from './DataGrid';
-import { Container, Row, Col, ProgressBar } from 'react-bootstrap';
+import { Container, Row, Button } from 'react-bootstrap';
 
-import FundsProgressBar from './FundProgressBar';
-import { defaultColumnProperties, DateFormatter } from './helper';
+import CallsProgressBar from './CallProgressBar';
+import { defaultColumnProperties, DateFormatter, currencyFormat } from './helper';
 import '../css/CapitalCallsDataGrid.css';
-
-const ProgBarFormatter = data => {
-  console.log('DATA', data.row);
-  const fics = data.row.fund_invested_committed;
-  console.log('FICS', fics);
-  return (
-    <Row>
-      {fics.map((fic, ind) => (
-        <Col key={ind}>
-          <FundsProgressBar value={fic} />
-        </Col>
-      ))}
-    </Row>
-  );
-};
 
 const columns = [
   {
@@ -35,21 +20,23 @@ const columns = [
     key: 'id',
     name: 'Call ID',
     sortable: true,
-    width: 100,
+    width: 80,
     filterable: true,
   },
-  // {
-  //   key: 'name',
-  //   name: 'Investment Name',
-  //   editable: true,
-  //   sortable: true,
-  //   width: 180,
-  //   filterable: true,
-  // },
+  {
+    key: 'capital',
+    name: 'Capital',
+    sortable: true,
+    width: 90,
+    filterable: true,
+    formatter: data => {
+      return <span>${currencyFormat(data.value)}</span>;
+    },
+  },
   {
     key: 'investment_breakdown',
-    name: 'Investments',
-    formatter: ProgBarFormatter,
+    name: 'Investments Breakdown',
+    formatter: CallsProgressBar,
   },
   {
     key: 'actions',
@@ -62,22 +49,17 @@ class CapitalCallsDataGrid extends React.Component {
   render() {
     return (
       <Container>
-        {/* <Row className="main-desc">
+        <Row className="main-desc">
           <h3>Capital Calls</h3>
-          <p className="desc">
-            Manage committments by adding more or deleting. For deleting committments that have are
-            inveseted these need to be deleted first. The table below list all committments. The
-            progress bar indicated the total investment / total committed for the committment.
-          </p>
-          <AddCommittment addToDB={this.props.addCommittmentToDB} funds={this.props.funds} />
-        </Row> */}
+          <p className="desc">To add a new capital call press the button below.</p>
+          <Button href="/newcall">Add a New Call</Button>
+        </Row>
         <Row>
-          {/* <h4>Capital Calls List</h4>
-          <p className="desc">
-            To filter press the Filter button. To edit committment name double click the committment
-            name cell and edit, once done press enter and it will autpomatically post the data in
-            the database. To delete the committment presse the cross sign.
-          </p> */}
+          <h4>Capital Calls List</h4>
+          <p>
+            To view confirmed capital calls the list is shown below. The list can be filtered as
+            desired. In the list, the capital required are fullfilled from various funds.
+          </p>
           <DataGrid
             columns={columns}
             rows={this.props.rows}
