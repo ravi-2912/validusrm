@@ -7,6 +7,7 @@ import NavBar from './NavBar';
 import NewCall from './NewCall';
 import CapitalCallsDataGrid from './CapitalCallsDataGrid';
 import { calcs_for_funds_invested_committed } from './helper';
+import { getData } from './apiCalls';
 
 const navBarMenuItems = [
   {
@@ -44,13 +45,7 @@ class CapitalCallsManagement extends React.Component {
   };
 
   getFunds = async () => {
-    return Axios.get('http://localhost:5000/funds')
-      .then(res => {
-        const data = res.data;
-        if (data.status === 'success') {
-          return data.data.funds;
-        }
-      })
+    getData('funds')
       .then(funds => {
         const updateFunds = funds.map(fund => {
           // added this for progressbar values
@@ -63,25 +58,13 @@ class CapitalCallsManagement extends React.Component {
   };
 
   getFundInvestments = async () => {
-    return Axios.get('http://localhost:5000/investments')
-      .then(res => {
-        const data = res.data;
-        if (data.status === 'success') {
-          return data.data.fundinvestments;
-        }
-      })
+    getData('investments')
       .then(invs => this.setState({ fundinvestments: invs }))
       .catch(err => console.log(err));
   };
 
   getCalls = async () => {
-    return Axios.get('http://localhost:5000/capitalcalls')
-      .then(res => {
-        const data = res.data;
-        if (data.status === 'success') {
-          return data.data.capitalcalls;
-        }
-      })
+    getData('capitalcalls')
       .then(calls => {
         // Quite complex manipulation to create a table for dashboard
         const invs = this.state.fundinvestments;

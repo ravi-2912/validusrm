@@ -2,23 +2,12 @@ import Axios from 'axios';
 
 export const SERVER_URL = 'http://localhost:5000';
 
-export const getFunds = () => {
-  return Axios.get(`${SERVER_URL}/funds`)
+export const getData = endpoint => {
+  return Axios.get(`${SERVER_URL}/${endpoint}`)
     .then(res => {
       const data = res.data;
       if (data.status === 'success') {
-        return data.data.funds;
-      }
-    })
-    .catch(err => console.log(err));
-};
-
-export const getCommittments = () => {
-  return Axios.get(`${SERVER_URL}/committments`)
-    .then(res => {
-      const data = res.data;
-      if (data.status === 'success') {
-        return data.data.committments;
+        return data.data;
       }
     })
     .catch(err => console.log(err));

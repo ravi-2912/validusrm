@@ -6,7 +6,7 @@ import NavBar from './NavBar';
 import FundsDataGrid from './FundsDataGrid';
 import CommittmentsDataGrid from './CommittmentsDataGrid';
 import { calcs_for_funds_invested_committed } from './helper';
-import { getFunds, getCommittments, sendUpdates, sendDelete, sendPost } from './apiCalls';
+import { getData, sendUpdates, sendDelete, sendPost } from './apiCalls';
 
 const navBarMenuItems = [
   {
@@ -43,7 +43,8 @@ class FundsManagement extends React.Component {
   };
 
   getFunds = () => {
-    getFunds()
+    getData('funds')
+      .then(res => res.funds)
       .then(funds => {
         const updateFunds = funds.map(fund => {
           // added this for progressbar values
@@ -56,7 +57,8 @@ class FundsManagement extends React.Component {
   };
 
   getCommittments = () => {
-    getCommittments()
+    getData('committments')
+      .then(res => res.committments)
       .then(committments => {
         const updateCommittments = committments.map(committment => {
           // added this for progressbar values
