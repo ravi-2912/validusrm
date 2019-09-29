@@ -14,7 +14,7 @@ class AddFund extends React.Component {
         if (!this.state.name) {
           alert('Enter a valid fund name.');
         } else {
-          this.props.addToDB(this.state.name);
+          this.props.addToDB({ name: this.state.name });
         }
       }
     }

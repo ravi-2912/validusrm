@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Container, Row } from 'react-bootstrap';
 
 import DataGrid from './DataGrid';
-import { newcallColumns } from './DataGridColumns';
+import { newcallColumns } from './dataGridColumns';
 
 class NewCallsDataGrid extends React.Component {
   static propTypes = {

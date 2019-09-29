@@ -4,7 +4,7 @@ import { Container, Row } from 'react-bootstrap';
 
 import AddFund from './AddFund';
 import DataGrid from './DataGrid';
-import { fundsColumns } from './DataGridColumns';
+import { fundsColumns } from './dataGridColumns';
 
 class FundsDataGrid extends React.Component {
   static propTypes = {

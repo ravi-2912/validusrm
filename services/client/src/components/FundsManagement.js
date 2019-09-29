@@ -1,5 +1,4 @@
 import React from 'react';
-import Axios from 'axios';
 import PropTypes from 'prop-types';
 import { Container, Row } from 'react-bootstrap';
 
@@ -7,6 +6,7 @@ import NavBar from './NavBar';
 import FundsDataGrid from './FundsDataGrid';
 import CommittmentsDataGrid from './CommittmentsDataGrid';
 import { calcs_for_funds_invested_committed } from './helper';
+import { getFunds, getCommittments, sendUpdates, sendDelete, sendPost } from './apiCalls';
 
 const navBarMenuItems = [
   {
@@ -42,14 +42,8 @@ class FundsManagement extends React.Component {
     location: PropTypes.object.isRequired,
   };
 
-  getfunds = () => {
-    Axios.get('http://localhost:5000/funds')
-      .then(res => {
-        const data = res.data;
-        if (data.status === 'success') {
-          return data.data.funds;
-        }
-      })
+  getFunds = () => {
+    getFunds()
       .then(funds => {
         const updateFunds = funds.map(fund => {
           // added this for progressbar values
@@ -62,13 +56,7 @@ class FundsManagement extends React.Component {
   };
 
   getCommittments = () => {
-    Axios.get('http://localhost:5000/committments')
-      .then(res => {
-        const data = res.data;
-        if (data.status === 'success') {
-          return data.data.committments;
-        }
-      })
+    getCommittments()
       .then(committments => {
         const updateCommittments = committments.map(committment => {
           // added this for progressbar values
@@ -84,7 +72,7 @@ class FundsManagement extends React.Component {
   componentDidMount() {
     const view = this.props.location.pathname.slice(1);
     this.setState({ view });
-    this.getfunds();
+    this.getFunds();
     this.getCommittments();
   }
 
@@ -92,21 +80,13 @@ class FundsManagement extends React.Component {
 
   onRowsChange = (rows, index = undefined, updated = undefined) => {
     if (index !== undefined && updated) {
-      let url = `http://localhost:5000/${this.state.view}/`;
+      let id = `${this.state.view}/`;
       if (this.state.view === 'funds') {
-        url += `${this.state.funds[index].id}`;
+        id += `${this.state.funds[index].id}`;
       } else {
-        url += `${this.state.committments[index].id}`;
+        id += `${this.state.committments[index].id}`;
       }
-      Axios.put(url, {
-        ...updated,
-      })
-        .then(res => {
-          const data = res.data;
-          if (data.status === 'success') {
-            return data.data;
-          }
-        })
+      sendUpdates(id, updated)
         .then(obj => {
           if (this.state.view === 'funds') {
             const fund = obj;
@@ -139,17 +119,16 @@ class FundsManagement extends React.Component {
       len = obj.committments.length;
     } else {
       obj = this.state.committments.filter(c => c.id === id)[0];
-      console.log(obj);
       len = obj.investments.length;
     }
     if (len > 0) {
       alert(`First delete dependents for ${this.state.view} ID ${obj.id} .`);
     } else {
-      Axios.delete(`http://localhost:5000/${this.state.view}/${id}`)
+      let idToDelete = `${this.state.view}/${id}`;
+      sendDelete(idToDelete)
         .then(res => {
-          const data = res.data;
-          if (data.status === 'success') {
-            this.getfunds();
+          if (res) {
+            this.getFunds();
             this.getCommittments();
           }
         })
@@ -157,24 +136,18 @@ class FundsManagement extends React.Component {
     }
   };
 
-  addFundToDB = name => {
-    Axios.post('http://localhost:5000/funds', {
-      name,
-    })
-      .then(res => res.data)
+  addFundToDB = data => {
+    sendPost('funds', data)
       .then(res => {
         if (res.status === 'success') {
-          this.getfunds();
+          this.getFunds();
         }
       })
       .catch(err => console.log(err));
   };
 
   addCommittmentToDB = data => {
-    Axios.post('http://localhost:5000/committments', {
-      ...data,
-    })
-      .then(res => res.data)
+    sendPost('committments', data)
       .then(res => {
         if (res.status === 'success') {
           this.getCommittments();
@@ -190,7 +163,7 @@ class FundsManagement extends React.Component {
           activeItem={this.state.view === 'funds' ? 1 : 2}
           menuItems={navBarMenuItems}
           onMenuItemClicked={view => {
-            this.getfunds();
+            this.getFunds();
             if (view === 'committments') {
               this.getCommittments();
             }

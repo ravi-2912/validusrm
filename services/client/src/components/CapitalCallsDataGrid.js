@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Row, Button } from 'react-bootstrap';
 
 import DataGrid from './DataGrid';
-import { capitalcallsColumns } from './DataGridColumns';
+import { capitalcallsColumns } from './dataGridColumns';
 
 class CapitalCallsDataGrid extends React.Component {
   render() {
