@@ -35,6 +35,7 @@ class CapitalCallsManagement extends React.Component {
     calls: [],
     fundinvestments: [],
     funds: [],
+    committments: [],
     filters: {},
   };
 
@@ -73,7 +74,7 @@ class CapitalCallsManagement extends React.Component {
       .catch(err => console.log(err));
   };
 
-  getCalls = () => {
+  getCalls = async () => {
     return Axios.get('http://localhost:5000/capitalcalls')
       .then(res => {
         const data = res.data;
@@ -138,11 +139,9 @@ class CapitalCallsManagement extends React.Component {
 
   onRowDelete = id => {
     let call = this.state.calls.filter(call => call.id === id)[0];
-    // console.log(id, call);
     let invesetments_id = call.investments === [] ? [] : call.investments.map(inv => inv.id);
 
     const onDeleteCheckSuccess = res => {
-      // console.log(res);
       let status = (Array.isArray(res) ? res : [res]).map(r => r.data.status === 'success');
       if (status) {
         this.getCalls();
@@ -172,9 +171,6 @@ class CapitalCallsManagement extends React.Component {
           menuItems={navBarMenuItems}
           onMenuItemClicked={view => {
             this.getFundInvestments();
-            if (view === 'newcall') {
-              //this.getCommittments();
-            }
             this.setState({ view });
           }}
         />
@@ -189,7 +185,7 @@ class CapitalCallsManagement extends React.Component {
                 onRowDelete={this.onRowDelete}
               />
             ) : (
-              <NewCall />
+              <NewCall committments={this.state.committments} />
             )}
           </Row>
         </Container>
