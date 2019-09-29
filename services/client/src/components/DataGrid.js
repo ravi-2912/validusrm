@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDataGrid from 'react-data-grid';
 import { Toolbar, Data } from 'react-data-grid-addons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import * as Icons from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import * as Icons from '@fortawesome/free-solid-svg-icons';
 
 class DataGrid extends React.Component {
   handleFilterChange = filter => {
@@ -23,10 +23,11 @@ class DataGrid extends React.Component {
     let actions = [
       {
         icon: (
-          <FontAwesomeIcon
-            icon={Icons.faTimes}
-            // color={row.committments.length === 0 ? 'red' : 'lightgrey'}
-          />
+          <span>&#10006;</span>
+          // <FontAwesomeIcon
+          //   icon={Icons.faTimes}
+          //   // color={row.committments.length === 0 ? 'red' : 'lightgrey'}
+          // />
         ),
         callback: () => {
           this.props.onRowDelete(row.id);
