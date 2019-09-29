@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Button, Col } from 'react-bootstrap';
-import DatePicker from 'react-date-picker';
+import DateTimePicker from 'react-datetime-picker';
 
 class AddCall extends React.Component {
   state = {
@@ -23,6 +23,7 @@ class AddCall extends React.Component {
       ...this.state,
       [evt.currentTarget.name]: evt.currentTarget.value,
     });
+    this.props.formIsChanging();
   };
 
   render() {
@@ -31,7 +32,7 @@ class AddCall extends React.Component {
         <Form onSubmit={this.handleSubmit}>
           <Form.Group controlId="formDate">
             <Form.Label>Select a Call Date</Form.Label>
-            <DatePicker
+            <DateTimePicker
               onChange={this.onDateChange}
               value={this.state.date}
               className="form-control"
