@@ -1,6 +1,7 @@
 import Axios from 'axios';
 
-export const SERVER_URL = 'http://localhost:5000';
+export const SERVER_URL = process.env.REACT_APP_USERS_SERVICE_URL;
+console.log(SERVER_URL);
 
 export const getData = endpoint => {
   return Axios.get(`${SERVER_URL}/${endpoint}`)
