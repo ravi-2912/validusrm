@@ -32,12 +32,18 @@ def logic(call, committment):
     remaining_val = call.capital
     cs = []
     for c in committment:
-        if 0 < remaining_val <= c.amount:
+        cs_invs = 0
+        committment_available = c.amount
+        for i in c.investments:
+            cs_invs = cs_invs + i.investment
+        committment_available = committment_available - cs_invs
+
+        if 0 < remaining_val <= committment_available:
             cs.append((remaining_val, c))
             remaining_val = 0
-        if remaining_val > c.amount:
-            cs.append((c.amount, c))
-            remaining_val = remaining_val - c.amount
+        if remaining_val > committment_available > 0:
+            cs.append((committment_available, c))
+            remaining_val = remaining_val - committment_available
     return cs
 
 
