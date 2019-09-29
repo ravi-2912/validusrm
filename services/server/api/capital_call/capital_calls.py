@@ -48,9 +48,7 @@ class CapitalCallsList(Resource):
         name = post_data.get('name')
         capital = post_data.get('capital')
         date_str = post_data.get('date')
-        print(date_str)
         date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%S.%f%z')
-        print(date)
         try:
             call = CapitalCall.query \
                 .filter_by(name=name) \
