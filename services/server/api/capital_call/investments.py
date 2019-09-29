@@ -1,7 +1,7 @@
 from flask import request
 from sqlalchemy import exc
 from flask_restful import Resource
-from sqlalchemy import select, asc, desc
+from sqlalchemy import select, asc
 
 from api import db
 from api.capital_call import api

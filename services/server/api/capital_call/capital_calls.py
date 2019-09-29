@@ -1,6 +1,7 @@
 from flask import request
 from sqlalchemy import exc
 from flask_restful import Resource
+from datetime import datetime
 
 from api import db
 from api.capital_call import api
@@ -46,13 +47,17 @@ class CapitalCallsList(Resource):
             )
         name = post_data.get('name')
         capital = post_data.get('capital')
+        date_str = post_data.get('date')
+        print(date_str)
+        date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%S.%f%z')
+        print(date)
         try:
             call = CapitalCall.query \
                 .filter_by(name=name) \
                 .first()
             if not call:
                 call_i = UTILS.add_capitalcall(
-                    name, capital
+                    name, capital, date=date
                 )
                 return UTILS.api_response(
                     msg=UTILS.ADDED(TYPE, name),

@@ -6,7 +6,7 @@ from api import db
 from api.capital_call import api
 from api.capital_call.models import Committment
 import api.capital_call.utils as UTILS
-
+from sqlalchemy import asc
 
 TYPE = 'Committment'
 
@@ -27,7 +27,8 @@ class CommittmentsList(Resource):
 
     def get(self):
         """Get all committments"""
-        committments = Committment.query.all()
+        committments = Committment.query. \
+            order_by(asc(Committment.date)).all()
         return UTILS.api_response(
             msg=UTILS.SUCCESS(TYPE, "")
             if committments
