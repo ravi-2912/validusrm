@@ -4,6 +4,7 @@ import Axios from 'axios';
 import AddCall from './AddCall';
 import NewCallsDataGrid from './NewCallDataGrid';
 import { Button } from 'react-bootstrap';
+import { getData, sendPost } from './apiCalls';
 
 class NewCall extends React.Component {
   state = {
@@ -54,13 +55,11 @@ class NewCall extends React.Component {
   };
 
   getCommittments = async () => {
-    return Axios.get('http://localhost:5000/committments')
-      .then(res => res.data.data.committments)
+    return getData('committments')
+      .then(res => res.committments)
       .then(cs => {
-        return Axios.all([
-          ...cs.map(c => Axios.get(`http://localhost:5000/funds/${c.fund_id}`)),
-        ]).then(res => {
-          const funds = res.map(r => r.data.data.name);
+        return Axios.all([...cs.map(c => getData(`funds/${c.fund_id}`))]).then(res => {
+          const funds = res.map(r => r.name);
           return cs.map(c => {
             c.fund_name = funds[c.fund_id - 1];
             c.total_drawdown_notice = 0;
@@ -76,20 +75,20 @@ class NewCall extends React.Component {
 
   addToDB = evt => {
     evt.preventDefault();
-    Axios.post('http://localhost:5000/capitalcalls', {
+    sendPost('capitalcalls', {
       name: this.state.new_investment_name,
       capital: this.state.new_capital,
       date: this.state.new_date,
       rule: this.state.rule,
     })
-      .then(res => res.data.data)
+      .then(res => res.data)
       .then(call => {
-        return Axios.post('http://localhost:5000/investments', {
+        console.log(call);
+        return sendPost('investments', {
           call_id: call.id,
           rule: this.state.rule,
         });
       })
-      .then(res => res.data)
       .then(data => {
         alert(data.message);
         this.props.changeView('dashboard');

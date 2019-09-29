@@ -143,7 +143,9 @@ class CapitalCallsManagement extends React.Component {
           activeItem={this.state.view === 'dashboard' ? 1 : 2}
           menuItems={navBarMenuItems}
           onMenuItemClicked={view => {
-            this.getFundInvestments();
+            this.getFunds()
+              .then(res => this.getFundInvestments())
+              .then(res => this.getCalls());
             this.setState({ view });
           }}
         />
