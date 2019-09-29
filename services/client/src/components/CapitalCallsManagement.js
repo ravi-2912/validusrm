@@ -45,7 +45,7 @@ class CapitalCallsManagement extends React.Component {
   };
 
   getFunds = async () => {
-    getData('funds')
+    return getData('funds')
       .then(res => res.funds)
       .then(funds => {
         const updateFunds = funds.map(fund => {
@@ -59,14 +59,14 @@ class CapitalCallsManagement extends React.Component {
   };
 
   getFundInvestments = async () => {
-    getData('investments')
+    return getData('investments')
       .then(res => res.fundinvestments)
       .then(invs => this.setState({ fundinvestments: invs }))
       .catch(err => console.log(err));
   };
 
   getCalls = async () => {
-    getData('capitalcalls')
+    return getData('capitalcalls')
       .then(res => {
         setTimeout(() => {}, 5000);
         return res.capitalcalls;
@@ -137,7 +137,12 @@ class CapitalCallsManagement extends React.Component {
       .catch(err => console.log(err));
   };
 
-  changeView = view => this.setState({ view });
+  changeView = view => {
+    this.getFunds()
+      .then(res => this.getFundInvestments())
+      .then(res => this.getCalls());
+    this.setState({ view });
+  };
 
   render() {
     return (
