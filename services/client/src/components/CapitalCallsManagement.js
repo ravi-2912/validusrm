@@ -67,7 +67,10 @@ class CapitalCallsManagement extends React.Component {
 
   getCalls = async () => {
     getData('capitalcalls')
-      .then(res => res.capitalcalls)
+      .then(res => {
+        setTimeout(() => {}, 5000);
+        return res.capitalcalls;
+      })
       .then(calls => {
         // Quite complex manipulation to create a table for dashboard
         const invs = this.state.fundinvestments;
