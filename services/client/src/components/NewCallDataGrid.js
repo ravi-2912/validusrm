@@ -100,7 +100,6 @@ class NewCallsDataGrid extends React.Component {
   };
 
   render() {
-    console.log(this.props.rows);
     return (
       <Container className="my-5 ">
         <Row>
