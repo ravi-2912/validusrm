@@ -1,5 +1,4 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
 import Axios from 'axios';
 
 import AddCall from './AddCall';

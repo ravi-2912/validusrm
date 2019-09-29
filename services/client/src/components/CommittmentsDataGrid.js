@@ -2,55 +2,7 @@ import React from 'react';
 import DataGrid from './DataGrid';
 import AddCommittment from './AddCommittment';
 import { Container, Row } from 'react-bootstrap';
-import { defaultColumnProperties, DateFormatter } from './helper';
-import FundsProgressBar from './FundProgressBar';
-
-const columns = [
-  {
-    key: 'id',
-    name: 'ID',
-    sortDescendingFirst: true,
-    sortable: true,
-    width: 80,
-    filterable: true,
-  },
-  {
-    key: 'fund_id',
-    name: 'Fund ID',
-    editable: true,
-    sortable: true,
-    width: 120,
-    filterable: true,
-  },
-  {
-    key: 'amount',
-    name: 'Amount',
-    editable: true,
-    sortable: true,
-    width: 120,
-    filterable: true,
-  },
-  {
-    key: 'date',
-    name: 'Date',
-    editable: true,
-    sortable: true,
-    width: 200,
-    filterable: true,
-    formatter: DateFormatter,
-  },
-  {
-    key: 'invested_committed',
-    name: 'Total Invested & Committed',
-    sortable: true,
-    formatter: FundsProgressBar,
-  },
-  {
-    key: 'actions',
-    name: 'Actions',
-    width: 120,
-  },
-].map(c => ({ ...c, ...defaultColumnProperties }));
+import { committmentsColumns } from './DataGridColumns';
 
 class CommittmentsDataGrid extends React.Component {
   render() {
@@ -73,7 +25,7 @@ class CommittmentsDataGrid extends React.Component {
             the database. To delete the committment presse the cross sign.
           </p>
           <DataGrid
-            columns={columns}
+            columns={committmentsColumns}
             rows={this.props.rows}
             filters={this.props.filters}
             onFiltersChange={this.props.onFiltersChange}

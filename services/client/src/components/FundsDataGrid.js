@@ -4,38 +4,7 @@ import { Container, Row } from 'react-bootstrap';
 
 import AddFund from './AddFund';
 import DataGrid from './DataGrid';
-import FundProgressBar from './FundProgressBar';
-import { defaultColumnProperties } from './helper';
-
-const columns = [
-  {
-    key: 'id',
-    name: 'ID',
-    sortDescendingFirst: true,
-    sortable: true,
-    width: 120,
-    filterable: true,
-  },
-  {
-    key: 'name',
-    name: 'Fund Name',
-    editable: true,
-    sortable: true,
-    width: 250,
-    filterable: true,
-  },
-  {
-    key: 'invested_committed',
-    name: 'Total Invested & Committed',
-    sortable: true,
-    formatter: FundProgressBar,
-  },
-  {
-    key: 'actions',
-    name: 'Actions',
-    width: 120,
-  },
-].map(c => ({ ...c, ...defaultColumnProperties }));
+import { fundsColumns } from './DataGridColumns';
 
 class FundsDataGrid extends React.Component {
   static propTypes = {
@@ -68,7 +37,7 @@ class FundsDataGrid extends React.Component {
             delete the fund press the cross sign.
           </p>
           <DataGrid
-            columns={columns}
+            columns={fundsColumns}
             rows={this.props.rows}
             filters={this.props.filters}
             onFiltersChange={this.props.onFiltersChange}

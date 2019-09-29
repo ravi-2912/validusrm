@@ -2,47 +2,7 @@ import React from 'react';
 import { Container, Row, Button } from 'react-bootstrap';
 
 import DataGrid from './DataGrid';
-import CallsProgressBar from './CallProgressBar';
-import { defaultColumnProperties, DateFormatter, currencyFormat } from './helper';
-
-const columns = [
-  {
-    key: 'date',
-    name: 'Date',
-    sortDescendingFirst: true,
-    sortable: true,
-    width: 120,
-    filterable: true,
-    formatter: DateFormatter,
-  },
-  {
-    key: 'id',
-    name: 'Call ID',
-    sortable: true,
-    width: 90,
-    filterable: true,
-  },
-  {
-    key: 'capital',
-    name: 'Capital',
-    sortable: true,
-    width: 90,
-    filterable: true,
-    formatter: data => {
-      return <span>${currencyFormat(data.value)}</span>;
-    },
-  },
-  {
-    key: 'investment_breakdown',
-    name: 'Investments Breakdown',
-    formatter: CallsProgressBar,
-  },
-  {
-    key: 'actions',
-    name: 'Actions',
-    width: 80,
-  },
-].map(c => ({ ...c, ...defaultColumnProperties }));
+import { capitalcallsColumns } from './DataGridColumns';
 
 class CapitalCallsDataGrid extends React.Component {
   render() {
@@ -68,7 +28,7 @@ class CapitalCallsDataGrid extends React.Component {
             calls.
           </p>
           <DataGrid
-            columns={columns}
+            columns={capitalcallsColumns}
             rows={this.props.rows}
             filters={this.props.filters}
             onFiltersChange={this.props.onFiltersChange}

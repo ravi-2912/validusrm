@@ -1,25 +1,4 @@
-import React from 'react';
 import * as Numeral from 'numeral';
-
-export const currencyFormat = val => {
-  let cur = Numeral(val).format('0.00a');
-  const curSplitted = cur.split('.');
-  const dec = curSplitted[1].slice(0, 2);
-  if (dec === '00') {
-    cur = curSplitted[0] + curSplitted[1].slice(2);
-  }
-  return cur;
-};
-
-export const defaultColumnProperties = {
-  resizable: true,
-};
-
-export const DateFormatter = date => {
-  const dateString = date.value.toString().split(' ')[0];
-
-  return <div>{dateString}</div>;
-};
 
 export const calcs_for_funds_invested_committed = (committments, fund = undefined) => {
   let totalCommitted = 0;
@@ -39,4 +18,14 @@ export const calcs_for_funds_invested_committed = (committments, fund = undefine
     totalInvested: totalInvested,
   };
   return invested_committed;
+};
+
+export const currencyFormat = val => {
+  let cur = Numeral(val).format('0.00a');
+  const curSplitted = cur.split('.');
+  const dec = curSplitted[1].slice(0, 2);
+  if (dec === '00') {
+    cur = curSplitted[0] + curSplitted[1].slice(2);
+  }
+  return cur;
 };
