@@ -77,6 +77,7 @@ class DataGrid extends React.Component {
         toolbar={<Toolbar enableFilter={true} />}
         onAddFilter={filter => this.handleFilterChange(filter)}
         onClearFilters={() => this.setState({ filters: {} })}
+        headerRowHeight={this.props.headerRowHeight}
       />
     );
   }
