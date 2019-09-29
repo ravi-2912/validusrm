@@ -1,6 +1,6 @@
 # Capital Calls Web App
 
-The Web App is made using a [Python](https://docs.python.org/3/) API server and [React](https://reactjs.org/) client.
+The Web App is made using a [Python](https://docs.python.org/3/) API server and [React](https://reactjs.org/) client. [Bootstrap](https://getbootstrap.com/) is primarily used for within React components and the grid/table view is made using [React Data Grid](https://adazzle.github.io/react-data-grid/) from Adazzle.
 
 The API server is built using [Flask](https://flask.palletsprojects.com/en/1.1.x/) using [Python 3.7](https://docs.python.org/3/). A REST API is developed with the help of [Flask-RESTful](https://flask-restful.readthedocs.io/en/latest/).
 
@@ -40,14 +40,6 @@ $> (services/server)> python main.py test
 $> (services/server)> python main.py cov
 ```
 
-
-#### `main.py`
-
-`main.py` is a Command Line Interface (CLI) wrapper around `manage.py` (another CLI) that creates some environemnt variables essentiallt to run the server on [localhost:5000](http://localhost:5000).
-
-#### `manage.py`
-
-`manage.py` is the file to configure the Flask CLI and manage the app from the command line. 
 #### 5.1.2. Run the client
 
 To run the ReactJS client navigate to the `./services/client` folder and run `npm run local` to run on localhost. This will start the development server and will set environment vaiable for server i.e. to localhost, assuming API server is runnning as per 5.1.1. above.
@@ -61,31 +53,36 @@ After this navigate to ['http://localhoat:3000'](http://localhoat:3000) to acces
 
 Note that `npm start` or `npm run build` commands will not get access to API server for localhost.
 
-
-
 ### 5.2. Docker
 
-Dokerfiles and Docker compose files are provided in `services/server` and `services` folder. When using docker, PostgreSQL container is used to handle the database.
+Dockerfiles and Docker compose files are provided in `services/server` and parent folder. Docker compose is build up of three containers: 
+* Python Alpine to run the Flask API server
+* Postres Alpine to run the PostgreSQL databse server
+* Node Alpine to run the ReactJS client server
 
-To run in Docker execute the following commands.
+To run the web app in Docker container execute the following commands.
 
 ```bash
 $> docker-compose up --build
 ```
 
-The above will build the all the service containers provided in thhe `docker-compose.yml` file.
+The above will build the all the service containers provided in thhe `docker-compose.yml` file. To run as daemon add `-d` flag to above command.
 
 Once the services are running navigate to [http://192.168.99.100:3007](http://192.168.99.100:3007) to access the react-client.
 
-Note, the Docker services will run depending on what version of Docker is available on host machine i.e. Legacy Docker Toolbox or the new Docker for Windows, etc. Depending on the Docker, `REACT_APP_USERS_SERVICE_URL` environment variable needs to amended in 
+**Important**
+Note, the Docker services will run depending on what version of Docker is available on host machine i.e. Legacy Docker Toolbox or the new Docker for Windows, etc. Depending on the Docker, [`REACT_APP_USERS_SERVICE_URL`](https://github.com/ravi-2912/validusrm/blob/master/docker-compose.yml#L41) environment variable needs to amended in the docker.
 
-The above address
+The address [http://192.168.99.100](http://192.168.99.100) is what I obtsained from Legacy Docker Toolbox.
 
+#### PORTS
 
+It is important to note the ports where the web app runs specially in a Docker container. Ports list are given in table below
 
-**Note:** Docker `volumes` keyword
-Please read article 
-
+| Run Environment  | Client         | Server         |
+| ---------------- | -------------- | -------------- |
+| Windows Host     | localhost:3000 | localhost:5000 |
+| Docker Container | localhost:3007 | localhost:5001 |
 
 
 ## 1. API Endpoints
@@ -119,7 +116,7 @@ Using the RESTfull best practice alongwith TDD, the following routes are availab
 
 ## 2. API Requests and Responses
 
-API requests can be mad using [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) or more conveniently and easily using [Axios](https://www.npmjs.com/package/axios). Some basic requests are shown below.
+API requests can be mad using [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) or more conveniently and easily using [Axios](https://www.npmjs.com/package/axios). Some basic requests examples are shown below.
 
 * GET requests to /funds
 
@@ -139,46 +136,6 @@ API requests can be mad using [Fetch API](https://developer.mozilla.org/en-US/do
         .catch(err => console.log(err))
     ```
 
-* POST request to /capitalcalls
-
-    ```javascript
-    Axios.post(`${SERVER_URL}/capitalcalls`, {
-        name: 'investment_1',
-        capital: 1000000.0
-        rule: 'fifo'
-    }).then(res => res.json())
-      .then(data => res.data)
-      .catch(err => console.log(err))
-    ```
-
-* PUT request to /committments/:id
-
-    ```javascript
-    Axios.put(`${SERVER_URL}/committments/${id}`, {
-        fund_id: 7
-    }).then(res => res.json())
-      .then(data => res.data)
-      .catch(err => console.log(err))
-    ```
-
-* PUT request to /capitallcalls/:id
-
-    ```javascript
-    Axios.put(`${SERVER_URL}/committments/${id}`, {
-        name: 'invesment_xyz'
-    }).then(res => res.json())
-      .then(data => res.data)
-      .catch(err => console.log(err))
-    ```
-
-* DELETE request to /committments/:id
-
-    ```javascript
-    Axios.deletet(`${SERVER_URL}/committments/${id}`)
-        .then(res => res.json())
-        .then(data => res.data)
-        .catch(err => console.log(err))
-    ```
 
 Assuming the API server is running on localhost, the SERVER_URL =  ["http://localhost:5000"](http://localhost:5000).
 
@@ -217,42 +174,14 @@ The response from API requests follows a standardized output of key-value pair o
     }
     ```
 
-* GET response from /committments/:id
-  
-
-
-## 3. Code Structure
-
-## 4. Dependencies
-
-## 6. Development Strategy
-
-### 6.1. Tests
-
-### 6.2. Code Coverage
-
-## Model
-
-### Tables
-
-### Relationships
-
-### FIFO logic
-
 ### Known issues
 
-## Further Developments
-
-**Note**
-
-* *Authentications*
-
-  ddd
-
-* *Deployment*
+1. API Server does not take querry commands such as filtering within URL. As a result API calls could be expensive when large data is there.
+2. Flash messaging or form validation is not present for good user experience.
+3. Post querries specially for posting capital investment is not task-queue based, as a result when multiples users are using the app, the app FIFO logic could break.
 
 ## References
 
-1. Testdrivenio
-2. flask book
-3. docker
+1. [Testdriven.io](http://testdriven.io/)
+2. Daniel Gaspar and Jack Stouffer, ***[Mastering Flask Development](https://www.packtpub.com/gb/web-development/mastering-flask-web-development-second-edition)***, PacktPublishing Ltd., Oct 2018.
+3. [Docker](https://www.docker.com/)
