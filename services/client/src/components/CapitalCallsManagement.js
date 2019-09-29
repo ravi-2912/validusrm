@@ -163,6 +163,8 @@ class CapitalCallsManagement extends React.Component {
       .catch(err => console.log(err));
   };
 
+  changeView = view => this.setState({ view });
+
   render() {
     return (
       <div className="App">
@@ -185,7 +187,7 @@ class CapitalCallsManagement extends React.Component {
                 onRowDelete={this.onRowDelete}
               />
             ) : (
-              <NewCall committments={this.state.committments} />
+              <NewCall committments={this.state.committments} changeView={this.changeView} />
             )}
           </Row>
         </Container>

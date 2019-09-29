@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import Axios from 'axios';
 
 import AddCall from './AddCall';
@@ -7,21 +8,27 @@ import { Button } from 'react-bootstrap';
 
 class NewCall extends React.Component {
   state = {
-    newdate: '',
+    new_date: '',
     new_capital: 0,
     new_investment_name: '',
     rule: 'fifo',
     committments: [],
     rows: [],
     filters: {},
+    calc_button_clicked: false,
+    toDashboard: false,
   };
+
+  formIsChanging = () => this.setState({ calc_button_clicked: false });
 
   onFiltersChange = filters => this.setState({ filters });
 
-  onCalculate = ({ date, name, capital, rule }) => {
-    console.log('clicked');
+  onRowsChange = rows => this.setState({ rows });
+
+  onCalculate = ({ date, name, capital, rule }, calc_button_clicked = true) => {
+    this.setState({ calc_button_clicked });
     this.setState(
-      { newdate: date, new_capital: capital, new_investment_name: name, rule: rule },
+      { new_date: date, new_capital: capital, new_investment_name: name, rule: rule },
       () => {
         let cs = this.state.committments;
         let unfilled_capital = this.state.new_capital;
@@ -42,7 +49,7 @@ class NewCall extends React.Component {
             c.undrawn_committment_before_drawdown - c.total_drawdown_notice;
           return c;
         });
-        this.onRowsChange({ rows: cs });
+        this.onRowsChange(cs);
       },
     );
   };
@@ -75,19 +82,33 @@ class NewCall extends React.Component {
       capital: this.state.new_capital,
       date: this.state.new_date,
       rule: this.state.rule,
-    });
+    })
+      .then(res => res.data.data)
+      .then(call => {
+        return Axios.post('http://localhost:5000/investments', {
+          call_id: call.id,
+          rule: this.state.rule,
+        });
+      })
+      .then(res => res.data)
+      .then(data => {
+        alert(data.message);
+        this.props.changeView('dashboard');
+      })
+      .catch(err => console.log(err));
   };
-
-  onRowsChange = rows => this.setState({ rows });
 
   componentDidMount() {
     this.getCommittments().then(res =>
-      this.onCalculate({
-        name: this.state.new_investment_name,
-        date: this.state.newdate,
-        capital: this.state.new_capital,
-        rule: this.state.rule,
-      }),
+      this.onCalculate(
+        {
+          name: this.state.new_investment_name,
+          date: this.state.newdate,
+          capital: this.state.new_capital,
+          rule: this.state.rule,
+        },
+        false,
+      ),
     );
   }
 
@@ -99,19 +120,26 @@ class NewCall extends React.Component {
           onCalculate={this.onCalculate}
           capital={this.state.new_capital}
           onFormChange={this.onFormChange}
+          formIsChanging={this.formIsChanging}
         />
-        <NewCallsDataGrid
-          className="mb-5"
-          rows={this.state.rows}
-          filters={this.state.filters}
-          onFiltersChange={this.onFiltersChange}
-          onRowsChange={this.onRowsChange}
-        />
-        <div className="mb-5 pb-5">
-          <Button className="mb-5" type="submit" onClick={this.addToDB}>
-            Add to DB
-          </Button>
-        </div>
+        {this.state.calc_button_clicked === true ? (
+          <>
+            <NewCallsDataGrid
+              className="mb-5"
+              rows={this.state.rows}
+              filters={this.state.filters}
+              onFiltersChange={this.onFiltersChange}
+              onRowsChange={this.onRowsChange}
+            />
+            <div className="mb-5 pb-5">
+              <Button className="mb-5" type="submit" onClick={this.addToDB}>
+                Add to DB
+              </Button>
+            </div>
+          </>
+        ) : (
+          <p>Click button above</p>
+        )}
       </>
     );
   }
