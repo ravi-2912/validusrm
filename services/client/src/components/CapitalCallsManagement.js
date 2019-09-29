@@ -7,7 +7,7 @@ import NavBar from './NavBar';
 import NewCall from './NewCall';
 import CapitalCallsDataGrid from './CapitalCallsDataGrid';
 import { calcs_for_funds_invested_committed } from './helper';
-import { getData } from './apiCalls';
+import { getData, sendUpdates, sendDelete } from './apiCalls';
 
 const navBarMenuItems = [
   {
@@ -46,6 +46,7 @@ class CapitalCallsManagement extends React.Component {
 
   getFunds = async () => {
     getData('funds')
+      .then(res => res.funds)
       .then(funds => {
         const updateFunds = funds.map(fund => {
           // added this for progressbar values
@@ -59,12 +60,14 @@ class CapitalCallsManagement extends React.Component {
 
   getFundInvestments = async () => {
     getData('investments')
+      .then(res => res.fundinvestments)
       .then(invs => this.setState({ fundinvestments: invs }))
       .catch(err => console.log(err));
   };
 
   getCalls = async () => {
     getData('capitalcalls')
+      .then(res => res.capitalcalls)
       .then(calls => {
         // Quite complex manipulation to create a table for dashboard
         const invs = this.state.fundinvestments;
@@ -98,17 +101,8 @@ class CapitalCallsManagement extends React.Component {
 
   onRowsChange = (rows, index = undefined, updated = undefined) => {
     if (index !== undefined && updated) {
-      let url = `http://localhost:5000/capitalcalls/${this.state.calls[index].id}`;
-
-      Axios.put(url, {
-        ...updated,
-      })
-        .then(res => {
-          const data = res.data;
-          if (data.status === 'success') {
-            return data.data;
-          }
-        })
+      const id = `capitalcalls/${this.state.calls[index].id}`;
+      sendUpdates(id, updated)
         .then(obj => {
           const call = obj;
           const calls = this.state.calls;
@@ -125,21 +119,15 @@ class CapitalCallsManagement extends React.Component {
     let invesetments_id = call.investments === [] ? [] : call.investments.map(inv => inv.id);
 
     const onDeleteCheckSuccess = res => {
-      let status = (Array.isArray(res) ? res : [res]).map(r => r.data.status === 'success');
+      let status = (Array.isArray(res) ? res : [res]).map(r => r === true);
       if (status) {
         this.getCalls();
         this.getFundInvestments();
       }
     };
-
-    Axios.delete(`http://localhost:5000/capitalcalls/${id}`)
-      .then(res =>
-        Axios.all(
-          invesetments_id.map(inv_id => {
-            return Axios.delete(`http://localhost:5000/investments/${inv_id}`);
-          }),
-        ),
-      )
+    const idToDelete = `capitalcalls/${id}`;
+    sendDelete(idToDelete)
+      .then(res => Axios.all(invesetments_id.map(inv_id => sendDelete(`investments/${inv_id}`))))
       .then(res => {
         onDeleteCheckSuccess(res);
       })
