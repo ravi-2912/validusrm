@@ -16,6 +16,7 @@ In either case the API server depends on some environment variables that need to
 
 ### 5.1. On Windows Host
 
+
 #### 5.1.1. Run the server
 Python 3.7 should be installed on the Windows host and added to PATH environment variable. This can be checked in command as follows:
 
@@ -30,7 +31,10 @@ To run the server, navigate to the `./services/server` folder and run `main.py` 
 
 ```bash
 $> cd services/server
-$> (services/server)> python main.py run
+$ (services/server)> python -m venv env
+$ (services/server)> env/Scripts/activate
+$(env) (services/server)> pip install -r requirements
+$(env) (services/server)> python main.py run
 ```
 
 To run tests or code coverage provide `test` or `cov` as argument to `main.py` instead of run.
@@ -42,11 +46,21 @@ $> (services/server)> python main.py cov
 
 #### 5.1.2. Run the client
 
+[NodeJS v10.16](https://nodejs.org/en/) and NPM v6.9 should be installed on the host machine. This can be checked with following commands.
+
+```bash
+$> node --version
+# v10.16.3
+$> npm --version
+# 6.9.0
+```
+
 To run the ReactJS client navigate to the `./services/client` folder and run `npm run local` to run on localhost. This will start the development server and will set environment vaiable for server i.e. to localhost, assuming API server is runnning as per 5.1.1. above.
 
 ```bash
 $> cd services/client
-$> npm rum local
+$ (services/client)> npm install
+$ (services/client)> npm rum local
 ```
 
 After this navigate to ['http://localhoat:3000'](http://localhoat:3000) to access the ReactJS client.
@@ -179,6 +193,8 @@ The response from API requests follows a standardized output of key-value pair o
 1. API Server does not take querry commands such as filtering within URL. As a result API calls could be expensive when large data is there.
 2. Flash messaging or form validation is not present for good user experience.
 3. Post querries specially for posting capital investment is not task-queue based, as a result when multiples users are using the app, the app FIFO logic could break.
+4. Manage states, routes and components more appropriately in the React application.
+5. Small numbe of API test fail due to code changes, this does not impact code functionality.
 
 ## References
 
