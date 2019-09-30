@@ -8,16 +8,16 @@ The server access a [SQLite3](https://docs.python.org/3/library/sqlite3.html?hig
 
 The API development follow a Test Driven Development (TDD) approach. Test are written using [`unittest`](https://docs.python.org/3/library/unittest.html) module avaialble within Python. This approach helps in design first and code later approach. Key specifications for the API were determined and then individual test were written. The actual code were then written for the test to pass.
 
-## 5. Running
+## 1. Running
 
 The API server can run either on a Windows Host having Python 3.7 or higher or on a [Docker container](https://docs.docker.com/get-started/part2/) using [Docker Compose](https://docs.docker.com/compose/) file.
 
 In either case the API server depends on some environment variables that need to be set prior to running the server, these are explained further.
 
-### 5.1. On Windows Host
+### 1.1. On Windows Host
 
+#### 1.1.1. Run the server
 
-#### 5.1.1. Run the server
 Python 3.7 should be installed on the Windows host and added to PATH environment variable. This can be checked in command as follows:
 
 ```bash
@@ -44,7 +44,7 @@ $> (services/server)> python main.py test
 $> (services/server)> python main.py cov
 ```
 
-#### 5.1.2. Run the client
+#### 1.1.2. Run the client
 
 [NodeJS v10.16](https://nodejs.org/en/) and NPM v6.9 should be installed on the host machine. This can be checked with following commands.
 
@@ -67,12 +67,13 @@ After this navigate to ['http://localhoat:3000'](http://localhoat:3000) to acces
 
 Note that `npm start` or `npm run build` commands will not get access to API server for localhost.
 
-### 5.2. Docker
+### 1.2. Docker
 
-Dockerfiles and Docker compose files are provided in `services/server` and parent folder. Docker compose is build up of three containers: 
-* Python Alpine to run the Flask API server
-* Postres Alpine to run the PostgreSQL databse server
-* Node Alpine to run the ReactJS client server
+Dockerfiles and Docker compose files are provided in `services/server` and parent folder. Docker compose is build up of three containers:
+
+- Python Alpine to run the Flask API server
+- Postres Alpine to run the PostgreSQL databse server
+- Node Alpine to run the ReactJS client server
 
 To run the web app in Docker container execute the following commands.
 
@@ -98,8 +99,7 @@ It is important to note the ports where the web app runs specially in a Docker c
 | Windows Host     | localhost:3000 | localhost:5000 |
 | Docker Container | localhost:3007 | localhost:5001 |
 
-
-## 1. API Endpoints
+## 2. API Endpoints
 
 Using the RESTfull best practice alongwith TDD, the following routes are available in the API.
 
@@ -126,33 +126,29 @@ Using the RESTfull best practice alongwith TDD, the following routes are availab
 | /investments/:id  | PUT         | Update      | Update one investment   |
 | /investments/:id  | DELETE      | Delete      | Delete one investment   |
 
-
-
-## 2. API Requests and Responses
+## 3. API Requests and Responses
 
 API requests can be mad using [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) or more conveniently and easily using [Axios](https://www.npmjs.com/package/axios). Some basic requests examples are shown below.
 
-* GET requests to /funds
+- GET requests to /funds
 
-    ```javascript
-    Axios.get(`${SERVER_URL}/funds`)
-        .then(res => res.json())
-        .then(data => res.data)
-        .catch(err => console.log(err))
-    ```
+  ```javascript
+  Axios.get(`${SERVER_URL}/funds`)
+    .then(res => res.json())
+    .then(data => res.data)
+    .catch(err => console.log(err));
+  ```
 
-* GET requests to /committment/:id
+- GET requests to /committment/:id
 
-    ```javascript
-    Axios.get(`${SERVER_URL}/committments/${id}`)
-        .then(res => res.json())
-        .then(data => res.data)
-        .catch(err => console.log(err))
-    ```
+  ```javascript
+  Axios.get(`${SERVER_URL}/committments/${id}`)
+    .then(res => res.json())
+    .then(data => res.data)
+    .catch(err => console.log(err));
+  ```
 
-
-Assuming the API server is running on localhost, the SERVER_URL =  ["http://localhost:5000"](http://localhost:5000).
-
+Assuming the API server is running on localhost, the SERVER_URL = ["http://localhost:5000"](http://localhost:5000).
 
 The response from API requests follows a standardized output of key-value pair objects. Every response will have three keys - `status`, `message` and `data`. The `status` key will contain values either `success` or `fail`. The `data` key will have values that are either object (recieved for POST, GET and PUT request) or list of objects (for GET request). The `data` key will be empty object for DELETE request.
 
@@ -170,23 +166,23 @@ The response from API requests follows a standardized output of key-value pair o
 
 **Example Response in `data` key**
 
-* GET response from /funds
+- GET response from /funds
 
-    ```javascript
-    {
-        status: 'success',
-        message: 'API response message',
-        data: [
-            {
-                'id': (number),
-                'name: (string)
-            },{
-                'id': (number),
-                'name: (string)
-            }, ...
-        ]
-    }
-    ```
+  ```javascript
+  {
+      status: 'success',
+      message: 'API response message',
+      data: [
+          {
+              'id': (number),
+              'name: (string)
+          },{
+              'id': (number),
+              'name: (string)
+          }, ...
+      ]
+  }
+  ```
 
 ### Known issues
 
@@ -196,8 +192,8 @@ The response from API requests follows a standardized output of key-value pair o
 4. Manage states, routes and components more appropriately in the React application.
 5. Small numbe of API test fail due to code changes, this does not impact code functionality.
 
-## References
+## 4. References
 
 1. [Testdriven.io](http://testdriven.io/)
-2. Daniel Gaspar and Jack Stouffer, ***[Mastering Flask Development](https://www.packtpub.com/gb/web-development/mastering-flask-web-development-second-edition)***, PacktPublishing Ltd., Oct 2018.
+2. Daniel Gaspar and Jack Stouffer, **_[Mastering Flask Development](https://www.packtpub.com/gb/web-development/mastering-flask-web-development-second-edition)_**, PacktPublishing Ltd., Oct 2018.
 3. [Docker](https://www.docker.com/)
