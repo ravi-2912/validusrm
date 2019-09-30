@@ -157,4 +157,3 @@ dmypy.json
 
 # SQLite db file
 *.db*
-gitter.py
