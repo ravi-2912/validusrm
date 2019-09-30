@@ -2,7 +2,7 @@ import React from 'react';
 import DataGrid from './DataGrid';
 import AddCommittment from './AddCommittment';
 import { Container, Row } from 'react-bootstrap';
-import { committmentsColumns } from './dataGridColumns';
+import { committmentsColumns } from './DataGridColumns';
 
 class CommittmentsDataGrid extends React.Component {
   render() {

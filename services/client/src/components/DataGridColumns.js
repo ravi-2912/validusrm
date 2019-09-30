@@ -177,7 +177,7 @@ export const newcallColumns = [
       <div>
         Undrawn Committment
         <br />
-        before Current
+        Before Current
         <br />
         Drawdown Notice
       </div>
@@ -210,7 +210,7 @@ export const newcallColumns = [
       <div>
         Undrawn Committment
         <br />
-        after Current
+        After Current
         <br />
         Drawdown Notice
       </div>
